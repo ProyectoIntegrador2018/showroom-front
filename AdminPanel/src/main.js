@@ -14,7 +14,7 @@ import apexchart from 'vue-apexcharts'
 import loadinganimation from '@/components/core/loading-animation'
 
 
-const uri = ''
+const uri = 'https://shrouded-plains-43003.herokuapp.com'
 //const uri = 'http://192.168.0.115:3000'
 
 const BPAPI = uri

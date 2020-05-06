@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import router from '@/router'
 
-const uri = ''
+const uri = 'https://shrouded-plains-43003.herokuapp.com'
 //const uri = 'http://192.168.0.115:3000'
 const BPAPI = uri
 
@@ -10,9 +10,9 @@ export default {
   authenticate (context, credentials) {
 
     //For Demostream
-
     if(credentials.email != "" && credentials.password !=""){
 
+          /*
       context.$cookies.set('BP', "DemoAldo", '1D')
       context.$cookies.set('H1BPidLo', "123", '1D')
       context.$cookies.set('IjkBPusrnmLo', "Administrador", '1D')
@@ -22,16 +22,25 @@ export default {
         color: "green",
         text: 'Bienvenido a BP'
       });
-  /*
-    var body = new URLSearchParams()
-    body.append('username', credentials.email)
-    body.append('password', credentials.password)
-    Axios.post(`${BPAPI}/api/login`, body)
+      */
+  
+    var base64encodedData = new Buffer(credentials.email + ':' + credentials.password).toString('base64');
+    const token = Buffer.from(credentials.email + ':' + credentials.password, 'utf8').toString('base64');
+
+    Axios.post(`${BPAPI}/auth`,null, { 
+    headers: {
+      'Host': uri,
+      'Authorization': 'Basic ' + token
+    }
+    })
         .then((response) => {
-          if (response.data.data.role == '99') {
-            context.$cookies.set('BP', response.data.data.token, '1D')
-            context.$cookies.set('H1BPidLo', response.data.data.id, '1D')
-            context.$cookies.set('IjkBPusrnmLo', response.data.data.username, '1D')
+          //response.data.data.role == '99' Revisar Rol
+          if (true) {
+            console.log("probando response")
+            console.log(response)
+            context.$cookies.set('BP', response.data.token, '1D')
+            context.$cookies.set('H1BPidLo', response.data.user.id, '1D')
+            context.$cookies.set('IjkBPusrnmLo', response.data.user.name, '1D')
             router.push('/items')
             window.location.reload()
             context.$store.commit("toggle_alert", {
@@ -41,17 +50,18 @@ export default {
 
             context.loadLogin = false
           }else{
-            context.$store.commit("toggle_alert", {
+              context.$store.commit("toggle_alert", {
               color: "red",
               text: 'Porfavor inicio sesión con un usuario del tipo administrador'
-            });        
+            });
           }
         }).catch((e) => {
           context.loadLogin = false
+          console.log(e)
           context.$store.commit("toggle_alert", {
             color: "red",
             text: 'Credenciales inválidas, intente nuevamente'
-          });        })*/
+          });        })
         }else{
           context.$store.commit('toggle_alert', {color: 'red', text: 'Uno o mas campos vacíos'})
         }

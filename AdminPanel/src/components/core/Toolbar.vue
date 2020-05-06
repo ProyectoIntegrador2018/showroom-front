@@ -22,7 +22,7 @@
     </v-btn>
 
     <div       v-if="loggedIn && this.$vuetify.breakpoint.smAndUp"
- style="color:#4A6BAE;position: fixed;right:50px;">Administrador</div>
+ style="color:#4A6BAE;position: fixed;right:50px;">{{getUserName()}}</div>
     <v-layout
       row
       justify-center>
@@ -78,6 +78,10 @@
     methods: {
       getIconStyle () {
         return 'color:' + this.menuColor + ' !important'
+      },
+      getUserName(){
+         return this.$cookies.get('IjkBPusrnmLo')
+
       },
       toggleSideBar () {
 
