@@ -9,6 +9,7 @@
         :items-per-page.sync="perPage"
         :headers="headers"
         :items="items"
+        :search="search"
         item-key="_id"
       >
         <template v-slot:item="props">
@@ -324,7 +325,8 @@ export default {
     pageCount: Number,
     page: Number,
     rowsPerPage: Number,
-    light: Boolean
+    light: Boolean,
+    search: String
   },
   components: {
   }
