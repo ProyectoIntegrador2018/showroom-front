@@ -96,7 +96,7 @@
             </v-card-text>
             <v-card-actions style="justify-content: center;">
                 <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="dialog = false" dark>Cancelar</v-btn>
-                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="dialog = false" color="#809DED">Aceptar</v-btn>
+                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="createItem()" color="#809DED">Aceptar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -130,7 +130,7 @@ export default {
             Name:"",
             Desc:""
         },
-        search: '',
+        search: "",
         dialog: false,
         tags: ['foo', 'bar', 'fizz', 'buzz'],
         items: [{
@@ -185,12 +185,10 @@ export default {
             this.getHistorial();
         },
         getItems() {
-
             //SetItems
-            /*
             this.items = [];
             db.get(
-                    `${BAPI}/api/items/`, {
+                    `${BAPI}/items/`, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)
                         },
@@ -198,7 +196,8 @@ export default {
                     }
                 )
                 .then(response => {
-                    this.items = response.data.items;
+                    this.items = response.data;
+                    console.log(this.items)
                 })
                 .catch(error => {
                     this.$store.commit("toggle_alert", {
@@ -206,14 +205,19 @@ export default {
                         text: error.message
                     });
                 });
-            */
         },
         createItem(){
-            
-        //Check API Call
-        /*
             if(this.newItem.Name != "" && this.newItem.Desc){
-                Axios.post(`${BAPI}/api/item/`)
+                var body = new URLSearchParams();
+                body.append("name", this.newItem.Name);
+                body.append("desciption1", this.newItem.Desc);
+                body.append("tags", ['TagPrueba1','TagPrueba2'])
+                Axios.post(`${BAPI}/items`,body,{
+            headers: {
+              Authorization: authentication.getAuthenticationHeader(this)
+            },
+            params: {}
+          })
             .then(res => {
               return res.data;
             })
@@ -237,6 +241,7 @@ export default {
               });
             this.newItem.Name = ""
             this.newItem.Desc = ""
+            this.getItems()
             })
             .catch(err => {
               this.loader = null
@@ -255,16 +260,14 @@ export default {
             color: "red",
             text: "Las contraseñas deben de ser iguales"
           });
-        }*/
+        }
         },
         handleFilePondInit: function (a) {
 
         },
     },
     mounted() {
-        if (this.loggedIn) {
             this.getItems()
-        }
     },
     components: {
         MyItems: () => import("@/components/viewComponents/Items/Items-Table")

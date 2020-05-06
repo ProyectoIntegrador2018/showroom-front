@@ -14,11 +14,11 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{props.item._id}}</td>
+            <td>{{props.item.id}}</td>
             <td class="request-td">{{props.item.name}}</td>
             <td class="request-td">{{props.item.tags}}</td>
             <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
-              <v-icon small class="mr-7" @click="editdialog = true" color="black">mdi-pencil</v-icon>
+              <v-icon small class="mr-7" @click="editItem(props.item)" color="black">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(props.item)" color="black">mdi-delete</v-icon>
             </td>
           </tr>
@@ -111,6 +111,7 @@
                                             color="#4a6cac"
                                             outlined
                                             dense
+                                            v-model="Name"
                                             style="border-color:coral;"
                                             >
                                             <template v-slot:label>
@@ -139,6 +140,7 @@
                                                     dense
                                                     outlined
                                                     rows="5"
+                                                    v-model="Desc"
                                                     row-height="45"
                                                     :rules="[v => !!v || 'La descripción es requerida']"
                                                     required
@@ -191,7 +193,7 @@
           <v-btn
             depressed
             style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
-            @click="editdialog = false"
+            @click="editNewInversion()"
             color="#809DED"
           >Aceptar</v-btn>
         </v-card-actions>
@@ -213,6 +215,8 @@ export default {
     descriptiondialog: false,
     editdialog: false,
     deletdialog: false,
+    Name:"",
+    Desc:"",
     myitem:"",
     editedItem: {
 
@@ -220,7 +224,7 @@ export default {
     headers: [
       {
         text: "ID",
-        value: "_id",
+        value: "id",
         sortable: false,
         align: "left"
       },
@@ -301,17 +305,85 @@ export default {
       var formattedDate = new Date(date);
       return formattedDate.toDateString();
     },
+    getItems() {
+            //SetItems
+            this.items = [];
+            db.get(
+                    `${BAPI}/items/`, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    }
+                )
+                .then(response => {
+                    this.items = response.data;
+                    console.log(this.items)
+                })
+                .catch(error => {
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: error.message
+                    });
+                });
+    },
     deleteItem(item){
           this.deletdialog = true;
           this.myitem = item.id
     },
+    editItem(item){
+      this.editdialog = true
+      this.myitem = item.id
+      this.Name = item.name
+      this.Desc = item.desciption1
+      this.value = item.tags
+    },
+    editNewInversion() {
+      console.log("Editando inversion");
+      console.log(this.newInversion);
+      if ( this.Name != "" && this.Desc != "") {
+        var body = new URLSearchParams();
+                body.append("name", this.Name);
+                body.append("desciption1", this.Desc);
+                body.append("tags", ['TagPrueba1','TagPrueba2'])
+        db.put(
+          `${BAPI}/items/${this.myitem}`,
+          body,
+          {
+            headers: {
+              Authorization: authentication.getAuthenticationHeader(this)
+            },
+            params: {}
+          }
+        )
+          .then(response => {
+            this.editdialog = false;
+            this.myitem = "";
+            this.Name = "";
+            this.Desc = "";
+            this.getItems()
+            this.$store.commit("toggle_alert", {
+              color: "green",
+              text: "Inversion editada correctamente"
+            });
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("toggle_alert", {
+              color: "red",
+              text: error.message
+            });
+          });
+      } else {
+        this.$store.commit("toggle_alert", {
+          color: "red",
+          text: "Porfavor llenar todos los campos obligatorios"
+        });
+      }
+    },
     confirmDelete(){
-      //delete after connection
-                  this.deletdialog = false;
-      //Check delete call
-      /*
            var body = new URLSearchParams()
-            db.delete(`${BAPI}/api/${this.myitem}`,{
+            db.delete(`${BAPI}/items/${this.myitem}`,{
                     headers: {
                         'Authorization': authentication.getAuthenticationHeader(this),
                     }
@@ -332,7 +404,6 @@ export default {
                     text: error.message
                   });                
                   })
-        */ 
         },
   },
   mounted() {
