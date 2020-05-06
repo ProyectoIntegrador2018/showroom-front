@@ -59,14 +59,21 @@
                                                 <v-flex sm12 class="pa-1">
                                                     <v-text-field v-model="newLink.Name" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                                         <template v-slot:label>
-                                                            <p v-html="'Nombre'" />
+                                                            <p v-html="'Nombre del link'" />
                                                         </template>
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" outlined :items="tags" attach color="#4a6cac" chips label="Items" multiple>
+                                                    <v-text-field v-model="newLink.UserContact" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                                         <template v-slot:label>
-                                                            <p v-html="'Tags'" />
+                                                            <p v-html="'Nombre del contacto'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+                                                <v-flex sm12 class="pa-1">
+                                                    <v-select v-model="value" outlined :items="MyItems" attach color="#4a6cac" chips label="Items" multiple>
+                                                        <template v-slot:label>
+                                                            <p v-html="'Items'" />
                                                         </template>
                                                     </v-select>
                                                 </v-flex>
@@ -84,7 +91,7 @@
                                     <v-flex xs12 sm4>
                                         <v-layout column>
                                             <template>
-                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headers" :items="added" hide-default-footer item-key="_id" >
+                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headers" :items="value" hide-default-footer item-key="_id" >
                                                     <template v-slot:item="props">
                                                         <tr>
                                                             <td class="request-td">{{props.item.name}}</td>
@@ -105,7 +112,7 @@
             </v-card-text>
             <v-card-actions style="justify-content: center;">
                 <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="dialog = false" dark>Cancelar</v-btn>
-                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="dialog = false" color="#809DED">Aceptar</v-btn>
+                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="createItem()" color="#809DED">Aceptar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -136,9 +143,11 @@ export default {
         rowsPerPage: 10,
         search: "",
         page: 1,
+        MyItems:[],
         newLink: {
             Name: "",
-            Desc: ""
+            Desc: "",
+            UserContact: ""
         },
         dialog: false,
         added: [{
@@ -205,12 +214,10 @@ export default {
             this.rowsPerPage = per;
             this.getHistorial();
         },
-        getItems() {
-            //SetItems
-            /*
-            this.items = [];
+        getMyItems() {
+            this.MyItems = [];
             db.get(
-                    `${BAPI}/api/items/`, {
+                    `${BAPI}/items/`, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)
                         },
@@ -218,7 +225,10 @@ export default {
                     }
                 )
                 .then(response => {
-                    this.items = response.data.items;
+                    for (var i = 0; i < response.data.length; i++) {
+                                this.MyItems.push(response.data[i].name)
+                    }
+                    console.log(this.MyItems)
                 })
                 .catch(error => {
                     this.$store.commit("toggle_alert", {
@@ -226,14 +236,41 @@ export default {
                         text: error.message
                     });
                 });
-            */
+        },
+        getItems() {
+            this.items = [];
+            db.get(
+                    `${BAPI}/links`, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    }
+                )
+                .then(response => {
+                    this.items = response.data;
+                    console.log(this.items)
+                })
+                .catch(error => {
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: error.message
+                    });
+                });
         },
         createItem() {
+            if(this.newLink.Name != "" && this.newLink.Desc){
+                var body = new URLSearchParams();
+                body.append("name", this.newLink.Name);
+                body.append("description", this.newLink.Desc)
+                body.append("clientName", this.newLink.UserContact)
 
-            //Check API Call
-            /*
-                if(this.newLink.Name != "" && this.newLink.Desc){
-                    Axios.post(`${BAPI}/api/item/`)
+                Axios.post(`${BAPI}/links`,body,{
+            headers: {
+              Authorization: authentication.getAuthenticationHeader(this)
+            },
+            params: {}
+          })
                 .then(res => {
                   return res.data;
                 })
@@ -251,12 +288,14 @@ export default {
                   this.loader = null
                   this.waitforload = false
                   this.dialog = false;
+                  this.getItems()
                   this.$store.commit("toggle_alert", {
                     color: "green",
                     text: "Registro exitoso!"
                   });
                 this.newLink.Name = ""
                 this.newLink.Desc = ""
+                this.newLink.UserContact = ""
                 })
                 .catch(err => {
                   this.loader = null
@@ -275,12 +314,13 @@ export default {
                 color: "red",
                 text: "Las contraseñas deben de ser iguales"
               });
-            }*/
+            }
         },
         handleFilePondInit: function (a) {}
     },
     mounted() {
-
+        this.getItems()
+        this.getMyItems()
     },
     components: {
         MyLinks: () => import("@/components/viewComponents/Links/Links-Table")
