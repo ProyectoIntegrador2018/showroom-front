@@ -65,18 +65,14 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" outlined :items="tags" attach color="#4a6cac" chips label="Tags" multiple>
+                                                     <v-text-field v-model="newUsr.Email" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                                         <template v-slot:label>
-                                                            <p v-html="'Tags'" />
+                                                            <p v-html="'Email'" />
                                                         </template>
-                                                    </v-select>
+                                                    </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-textarea v-model="newUsr.Desc" dense outlined rows="5" row-height="45" :rules="[v => !!v || 'La descripción es requerida']" required color="#4a6cac" counter maxlength="250" style="border-color:coral;">
-                                                        <template v-slot:label>
-                                                            <p v-html="'Descripción'" />
-                                                        </template>
-                                                    </v-textarea>
+                                                     <v-select v-model="value" :items="roles" label="Rol" dense></v-select>
                                                 </v-flex>
                                             </v-flex>
                                         </v-layout>
@@ -84,14 +80,14 @@
 
                                     <v-flex xs12 sm4>
                                         <v-flex sm12 class="pa-1">
-                                            <v-text-field height="40" color="#4a6cac" outlined dense type="password" style="border-color:coral;">
+                                            <v-text-field height="40" v-model="password" color="#4a6cac" outlined dense type="password" style="border-color:coral;">
                                                 <template v-slot:label>
                                                     <p v-html="'Contraseña'" />
                                                 </template>
                                             </v-text-field>
                                         </v-flex>
                                         <v-flex sm12 class="pa-1">
-                                            <v-text-field height="40" color="#4a6cac" outlined type="password" dense style="border-color:coral;">
+                                            <v-text-field height="40" v-model="confirmpassword" color="#4a6cac" outlined type="password" dense style="border-color:coral;">
                                                 <template v-slot:label>
                                                     <p v-html="'Confirmar Contraseña'" />
                                                 </template>
@@ -106,7 +102,7 @@
             </v-card-text>
             <v-card-actions style="justify-content: center;">
                 <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="dialog = false" dark>Cancelar</v-btn>
-                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="dialog = false" color="#809DED">Aceptar</v-btn>
+                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="createItem()" color="#809DED">Aceptar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -137,9 +133,13 @@ export default {
         rowsPerPage: 10,
         page: 1,
         search: "",
+        password: "",
+        confirmpassword: "",
+        roles: ['user', 'admin'],
         newUsr: {
             Name: "",
             Desc: "",
+            Email: "",
         },
         dialog: false,
         tags: ['foo', 'bar', 'fizz', 'buzz'],
@@ -206,12 +206,11 @@ export default {
             this.rowsPerPage = per;
             this.getHistorial();
         },
-        getItems() {
+        getTags() {
             //SetItems
-            /*
-            this.items = [];
+            this.tags = [];
             db.get(
-                    `${BAPI}/api/items/`, {
+                    `${BAPI}/tags/`, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)
                         },
@@ -219,7 +218,12 @@ export default {
                     }
                 )
                 .then(response => {
-                    this.items = response.data.items;
+
+                    for (var i = 0; i < response.data.length; i++) {
+                        console.log(i)
+                        this.tags.push(response.data[i].name)
+                    }
+                    console.log("mis tags", this.tags)
                 })
                 .catch(error => {
                     this.$store.commit("toggle_alert", {
@@ -227,61 +231,99 @@ export default {
                         text: error.message
                     });
                 });
-            */
+        },
+        getItems() {
+            this.items = [];
+            db.get(
+                    `${BAPI}/users`, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    }
+                )
+                .then(response => {
+                    this.items = response.data;
+                    console.log(response.data)
+                })
+                .catch(error => {
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: error.message
+                    });
+                });
         },
         createItem() {
-
-            //Check API Call
-            /*
-                if(this.newUsr.Name != "" && this.newUsr.Desc){
-                    Axios.post(`${BAPI}/api/item/`)
-                .then(res => {
-                  return res.data;
-                })
-                .then(res => {
-                  if(this.imageform1 != null){
-                  return Promise.all([
-                    Axios.post(
-                      `${BAPI}/api/${res.data.id}/images/`,
-                      this.imageform1
-                    )
-                  ]);
-                  }
-                })
-                .then(res => {
-                  this.loader = null
-                  this.waitforload = false
-                  this.dialog = false;
-                  this.$store.commit("toggle_alert", {
-                    color: "green",
-                    text: "Registro exitoso!"
-                  });
-                this.newUsr.Name = ""
-                this.newUsr.Desc = ""
-                })
-                .catch(err => {
-                  this.loader = null
-                  this.waitforload = false
-                  console.warn(err);
-                  this.$store.commit("toggle_alert", {
-                    color: "error",
-                    text: err.response.data.message
-                  });
-                });
+            if (this.password == this.confirmpassword) {
+                if (this.newUsr.Name != "" && this.newUsr.Email && this.password != "" && this.confirmpassword != "") {
+                    var body = new URLSearchParams();
+                    body.append("name", this.newUsr.Name);
+                    body.append("email", this.newUsr.Email);
+                    body.append("password", this.password);
+                    body.append("role", this.value)
+                    Axios.post(`${BAPI}/users`, body, {
+                            headers: {
+                                Authorization: authentication.getAuthenticationHeader(this)
+                            },
+                            params: {}
+                        })
+                        .then(res => {
+                            return res.data;
+                        })
+                        .then(res => {
+                            if (this.imageform1 != null) {
+                                return Promise.all([
+                                    Axios.post(
+                                        `${BAPI}/api/${res.data.id}/images/`,
+                                        this.imageform1
+                                    )
+                                ]);
+                            }
+                        })
+                        .then(res => {
+                            this.loader = null
+                            this.waitforload = false
+                            this.dialog = false;
+                            this.getItems()
+                            this.$store.commit("toggle_alert", {
+                                color: "green",
+                                text: "Registro exitoso!"
+                            });
+                            this.newUsr.Name = ""
+                            this.newUsr.Desc = ""
+                            this.password = ""
+                            thos.confirmpassword = ""
+                        })
+                        .catch(err => {
+                            this.loader = null
+                            this.waitforload = false
+                            console.warn(err);
+                            this.$store.commit("toggle_alert", {
+                                color: "error",
+                                text: err.response.data.message
+                            });
+                        });
+                } else {
+                    this.loader = null
+                    this.waitforload = false
+                    console.warn("No se puede registrar, faltan obligatorios");
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: "Todos los campos son obligatorios"
+                    });
+                }
             } else {
-              this.loader = null
-              this.waitforload = false
-              console.warn("No se puede registrar, faltan obligatorios");
-              this.$store.commit("toggle_alert", {
-                color: "red",
-                text: "Las contraseñas deben de ser iguales"
-              });
-            }*/
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: "Las contraseñas no coinciden"
+                    });
+            }
         },
         handleFilePondInit: function (a) {}
     },
     mounted() {
-
+        this.getItems()
+        this.getTags()
     },
     components: {
         MyUsers: () => import("@/components/viewComponents/Users/Users-Table")
