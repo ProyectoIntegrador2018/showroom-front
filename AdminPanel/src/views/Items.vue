@@ -40,7 +40,7 @@
         </v-container>
 
         <v-card class="mx-auto" :elevation="0">
-            <MyItems @updatePage="updatePage" @updatePerPage="updatePerPage" :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :search="search" :items="items" :light="false" />
+            <MyItems @updatePage="updatePage" @updatePerPage="updatePerPage" :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :search="search" :items="items" :light="false" :tags="tags"/>
         </v-card>
     </v-container>
 
@@ -184,6 +184,32 @@ export default {
             this.rowsPerPage = per;
             this.getHistorial();
         },
+        getTags() {
+                //SetItems
+                this.tags = [];
+                db.get(
+                        `${BAPI}/tags/`, {
+                            headers: {
+                                Authorization: authentication.getAuthenticationHeader(this)
+                            },
+                            params: {}
+                        }
+                    )
+                    .then(response => {
+
+                        for (var i = 0; i < response.data.length; i++) {
+                            console.log(i)
+                                this.tags.push(response.data[i].name)
+                            }
+                        console.log("mis tags",this.tags)
+                    })
+                    .catch(error => {
+                        this.$store.commit("toggle_alert", {
+                            color: "red",
+                            text: error.message
+                        });
+                    });
+        },
         getItems() {
             //SetItems
             this.items = [];
@@ -211,7 +237,7 @@ export default {
                 var body = new URLSearchParams();
                 body.append("name", this.newItem.Name);
                 body.append("desciption1", this.newItem.Desc);
-                body.append("tags", ['TagPrueba1','TagPrueba2'])
+                body.append("tags", this.value)
                 Axios.post(`${BAPI}/items`,body,{
             headers: {
               Authorization: authentication.getAuthenticationHeader(this)
@@ -268,6 +294,7 @@ export default {
     },
     mounted() {
             this.getItems()
+            this.getTags()
     },
     components: {
         MyItems: () => import("@/components/viewComponents/Items/Items-Table")

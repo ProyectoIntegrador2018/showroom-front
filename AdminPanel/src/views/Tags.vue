@@ -80,7 +80,7 @@
             </v-card-text>
             <v-card-actions style="justify-content: center;">
                 <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="dialog = false" dark>Cancelar</v-btn>
-                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="dialog = false" color="#809DED">Aceptar</v-btn>
+                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="createTag()" color="#809DED">Aceptar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -159,13 +159,10 @@ export default {
         };
         return server;
         },
-getItems() {
-
-            //SetTags
-            /*
+        getItems() {
             this.items = [];
             db.get(
-                    `${BAPI}/api/tags/`, {
+                    `${BAPI}/tags`, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)
                         },
@@ -173,7 +170,7 @@ getItems() {
                     }
                 )
                 .then(response => {
-                    this.items = response.data.items;
+                    this.items = response.data;
                 })
                 .catch(error => {
                     this.$store.commit("toggle_alert", {
@@ -181,14 +178,18 @@ getItems() {
                         text: error.message
                     });
                 });
-            */
         },
         createTag(){
             
-        //Check API Call
-        /*
             if(this.newTag.Name != ""){
-                Axios.post(`${BAPI}/api/item/`)
+                var body = new URLSearchParams();
+                body.append("name", this.newTag.Name);
+                Axios.post(`${BAPI}/tags`,body,{
+            headers: {
+              Authorization: authentication.getAuthenticationHeader(this)
+            },
+            params: {}
+          })
             .then(res => {
               return res.data;
             })
@@ -206,6 +207,7 @@ getItems() {
               this.loader = null
               this.waitforload = false
               this.dialog = false;
+              this.getItems()
               this.$store.commit("toggle_alert", {
                 color: "green",
                 text: "Registro exitoso!"
@@ -229,7 +231,7 @@ getItems() {
             color: "red",
             text: "Las contraseñas deben de ser iguales"
           });
-        }*/
+        }
         },
         handleFilePondInit: function (a) {
 
@@ -237,7 +239,7 @@ getItems() {
 
     },
     mounted() {
-
+        this.getItems() 
     },
     components: {
         MyTags: () => import("@/components/viewComponents/Tags/Tags-Table")

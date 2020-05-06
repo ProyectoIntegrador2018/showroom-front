@@ -193,7 +193,7 @@
           <v-btn
             depressed
             style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
-            @click="editNewInversion()"
+            @click="confirmEditItem()"
             color="#809DED"
           >Aceptar</v-btn>
         </v-card-actions>
@@ -336,16 +336,13 @@ export default {
       this.myitem = item.id
       this.Name = item.name
       this.Desc = item.desciption1
-      this.value = item.tags
     },
-    editNewInversion() {
-      console.log("Editando inversion");
-      console.log(this.newInversion);
+    confirmEditItem() {
       if ( this.Name != "" && this.Desc != "") {
         var body = new URLSearchParams();
                 body.append("name", this.Name);
                 body.append("desciption1", this.Desc);
-                body.append("tags", ['TagPrueba1','TagPrueba2'])
+                body.append("tags", this.value)
         db.put(
           `${BAPI}/items/${this.myitem}`,
           body,
@@ -364,7 +361,7 @@ export default {
             this.getItems()
             this.$store.commit("toggle_alert", {
               color: "green",
-              text: "Inversion editada correctamente"
+              text: "Item editado correctamente"
             });
           })
           .catch(error => {
@@ -417,6 +414,7 @@ export default {
     rowsPerPage: Number,
     light: Boolean,
     search: String,
+    tags: Array,
 
   },
   components: {

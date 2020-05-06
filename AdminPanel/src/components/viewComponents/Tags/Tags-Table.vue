@@ -13,10 +13,10 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{props.item._id}}</td>
+            <td>{{props.item.id}}</td>
             <td class="request-td">{{props.item.name}}</td>
             <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
-              <v-icon small class="mr-7" @click="editdialog = true" color="black">mdi-pencil</v-icon>
+              <v-icon small class="mr-7" @click="editItem(props.item)" color="black">mdi-pencil</v-icon>
               <v-icon small @click="deleteTag(props.item)" color="black">mdi-delete</v-icon>
             </td>
           </tr>
@@ -109,6 +109,7 @@
                                             height="40"
                                             color="#4a6cac"
                                             outlined
+                                            v-model="Name"
                                             dense
                                             style="border-color:coral;"
                                             >
@@ -153,7 +154,7 @@
           <v-btn
             depressed
             style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
-            @click="editdialog = false"
+            @click="editTag()"
             color="#809DED"
           >Aceptar</v-btn>
         </v-card-actions>
@@ -172,6 +173,7 @@ export default {
     dialog: false,
     myitems: [],
     descriptiondialog: false,
+    Name:"",
     editdialog: false,
     deletdialog: false,
     editedItem: {
@@ -180,7 +182,7 @@ export default {
     headers: [
       {
         text: "ID",
-        value: "_id",
+        value: "id",
         sortable: false,
         align: "left"
       },
@@ -258,17 +260,81 @@ export default {
       var formattedDate = new Date(date);
       return formattedDate.toDateString();
     },
+    getItems() {
+            //SetItems
+            this.items = [];
+            db.get(
+                    `${BAPI}/tags/`, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    }
+                )
+                .then(response => {
+                    this.items = response.data;
+                    console.log(this.items)
+                })
+                .catch(error => {
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: error.message
+                    });
+                });
+    },
+    editItem(item){
+      this.editdialog = true
+      this.myitem = item.id
+      this.Name = item.name
+    },
+    editTag() {
+      console.log("Editando inversion");
+      console.log(this.newInversion);
+      if ( this.Name != "" && this.Desc != "") {
+        var body = new URLSearchParams();
+                body.append("name", this.Name);
+                body.append("desciption1", this.Desc);
+                body.append("tags", ['TagPrueba1','TagPrueba2'])
+        db.put(
+          `${BAPI}/tags/${this.myitem}`,
+          body,
+          {
+            headers: {
+              Authorization: authentication.getAuthenticationHeader(this)
+            },
+            params: {}
+          }
+        )
+          .then(response => {
+            this.editdialog = false;
+            this.Name = "";
+            this.getItems()
+            this.$store.commit("toggle_alert", {
+              color: "green",
+              text: "Tag editada correctamente"
+            });
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("toggle_alert", {
+              color: "red",
+              text: error.message
+            });
+          });
+      } else {
+        this.$store.commit("toggle_alert", {
+          color: "red",
+          text: "Porfavor llenar todos los campos obligatorios"
+        });
+      }
+    },
     deleteTag(item){
           this.deletdialog = true;
           this.myitem = item.id
     },
     confirmDelete(){
-      //delete after connection
-                  this.deletdialog = false;
-      //Check delete call
-      /*
            var body = new URLSearchParams()
-            db.delete(`${BAPI}/api/${this.myitem}`,{
+            db.delete(`${BAPI}/tags/${this.myitem}`,{
                     headers: {
                         'Authorization': authentication.getAuthenticationHeader(this),
                     }
@@ -276,7 +342,7 @@ export default {
                 .then((response) => {
                       this.$store.commit("toggle_alert", {
                       color: "green",
-                      text: "Se elimino el item de manera exitosa"
+                      text: "Se elimino el tag de manera exitosa"
                     });
                     this.getItems()
                     this.deletdialog = false
@@ -289,7 +355,6 @@ export default {
                     text: error.message
                   });                
                   })
-        */ 
         },
   },
   mounted() {
