@@ -20,35 +20,82 @@
                                 </v-layout>
                             </v-flex>
 
-                                <v-flex xs12 sm12 style="margin-top: 10vh;">
-                                    <v-layout column style="margin-left:3%">
-                                        <v-text-field color="#4A6BAE" dense :background-color="'white'" v-on:keyup.enter="submitAuthentication()" v-model="credentials.email" required>
-                                            <template v-slot:label>
-                                                <p v-html="'Correo electrónico'" />
-                                            </template>
-                                        </v-text-field>
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
 
-                                    </v-layout>
-                                </v-flex>
+                                </v-layout>
+                            </v-flex>
 
-                                <v-flex xs12 sm12>
-                                    <v-layout column style="margin-left:3%">
-                                        <br>
-                                        <br>
-                                        <p v-text="texts.desc_2" class="field-title" />
-                                        <v-text-field :background-color="'white'" color="#4A6BAE" :append-icon="loginPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'" @click:append="() => (loginPasswordVisible = !loginPasswordVisible)" v-on:keyup.enter="submitAuthentication()" v-model="credentials.password" :type="loginPasswordVisible ? 'text' : 'password'">
-                                            <template v-slot:label>
-                                                <p v-html="'Contraseña'" />
-                                            </template>
-                                        </v-text-field>
-                                    </v-layout>
-                                </v-flex>
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+                                    <v-text-field color="#4A6BAE" dense :background-color="'white'" v-on:keyup.enter="submitAuthentication()" v-model="credentials.email" required>
+                                        <template v-slot:label>
+                                            <p v-html="'Correo electrónico'" />
+                                        </template>
+                                    </v-text-field>
 
-                                <v-flex xs12 sm12>
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 sm4>
+                                <v-layout column style="margin-left:3%">
                                     <br>
-                                    <v-btn width="100%" color="#4A6BAE" v-on="on" @click.native="submitAuthentication()" dark>Iniciar Sesión</v-btn>
-                                </v-flex>
+                                    <br>
+                                    <p v-text="texts.desc_2" class="field-title" />
+                                    <v-text-field :background-color="'white'" color="#4A6BAE" :append-icon="loginPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'" @click:append="() => (loginPasswordVisible = !loginPasswordVisible)" v-on:keyup.enter="submitAuthentication()" v-model="credentials.password" :type="loginPasswordVisible ? 'text' : 'password'">
+                                        <template v-slot:label>
+                                            <p v-html="'Contraseña'" />
+                                        </template>
+                                    </v-text-field>
+                                </v-layout>
+                            </v-flex>
 
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-left:1%">
+                                <br>
+                                <v-btn width="100%" color="#4A6BAE" v-on="on" @click.native="submitAuthentication()" dark>Iniciar Sesión</v-btn>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
+
+
+                            <v-flex xs12 sm4 style="margin-left:1%">
+                                <br>
+                                <v-btn width="100%" color="#4A6BAE" v-on="on" @click.native="dialog = true" dark>Recuperar Contraseña</v-btn>
+                            </v-flex>
+
+                            <v-flex xs12 sm4 style="margin-top: 10vh;">
+                                <v-layout column style="margin-left:3%">
+
+                                </v-layout>
+                            </v-flex>
 
                         </v-layout>
                     </v-container>
@@ -60,14 +107,62 @@
 
                     <figure>
                         <div>
-                            <img class="building-image" src="/static/background-image.png">
-
                         </div>
                     </figure>
                 </v-layout>
             </v-flex>
         </v-layout>
     </v-container>
+
+    <v-dialog v-model="dialog" max-width="800" content-class="dialog-radius">
+      <v-card>
+        <v-card-title class="headline" style="justify-content:left;color:#809DED;">Recuperar Contraseña</v-card-title>
+        <v-card-text>
+            <v-container class="pa-0" grid-list-md text-xs-center>
+                    <v-layout row wrap>
+                    <v-flex xs12>
+                            <v-container class="pa-0" grid-list-md text-xs-left>
+                            <v-layout row wrap>
+                                <v-flex xs12 sm12>
+                                <v-layout column>
+                                        <v-flex sm12 class="pa-1">
+                                            <v-text-field
+                                            height="40"
+                                            color="#4a6cac"
+                                            outlined
+                                            dense
+                                            v-model="email"
+                                            style="border-color:coral;"
+                                            >
+                                            <template v-slot:label>
+                                                <p v-html="'Correo'" />
+                                            </template>
+                                            </v-text-field>
+                                        </v-flex>
+                                </v-layout>
+                                </v-flex>
+                            </v-layout>
+                            </v-container>
+                    </v-flex>
+                    </v-layout>
+            </v-container>
+        </v-card-text>
+        <v-card-actions style="justify-content: center;">
+          <v-btn
+            style="text-transform: none; width: 25%; margin-right: 10%;"
+            color="#E36E6E"
+            @click="dialog = false"
+            dark
+          >Cancelar</v-btn>
+          <v-btn
+            depressed
+            style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
+            @click="RecoverPass()"
+            color="#809DED"
+          >Confirmar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <br />
     <br />
@@ -87,6 +182,8 @@ export default {
     },
     data: () => ({
         loginPasswordVisible: false,
+        dialog: false,
+        email: "",
         isBooted: false,
         smallLogo: "https://pbs.twimg.com/profile_images/991710919456509952/CFSBX8vW_400x400.jpg",
         bigLogo: "https://pbs.twimg.com/profile_images/991710919456509952/CFSBX8vW_400x400.jpg",
@@ -101,6 +198,11 @@ export default {
         submitAuthentication() {
             this.loadLogin = true
             Authentication.authenticate(this, this.credentials)
+        },
+        RecoverPass(){
+
+            //after recover call
+            this.dialog = false
         }
     },
     mounted() {

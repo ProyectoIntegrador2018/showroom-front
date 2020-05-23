@@ -45,8 +45,18 @@
         @alert="toggleAlert" />
 
       <core-drawer 
+        v-if="checkAdmin"
         :color="colorSideBar"
         :items="sidebarItems"
+        :mini="mini"
+        :textColor="textColor"
+        :iconColor="iconColor"
+      />
+
+      <core-drawer 
+      v-else
+        :color="colorSideBar"
+        :items="sidebarUsers"
         :mini="mini"
         :textColor="textColor"
         :iconColor="iconColor"
@@ -110,6 +120,18 @@ import router from '@/router'
           to: "/users" 
         },
       ],
+      sidebarUsers: [
+        {
+          title: "Links", 
+          icon: "mdi-share-variant", 
+          to: "/links" 
+        },
+        {
+          title: "Tags", 
+          icon: "mdi-code-tags", 
+          to: "/tags" 
+        }
+      ],
       mini: true,
       colorSideBar: 'white',
       iconColor: 'white',
@@ -161,6 +183,9 @@ import router from '@/router'
     computed: {
       loggedIn () {
         return this.$cookies.get('H1BPidLo') !== null
+      },
+      checkAdmin(){
+        return this.$cookies.get('BPTYPE') == 'admin'
       },
       alert () {
         return this.$store.state.alert
