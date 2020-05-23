@@ -7,38 +7,39 @@ const BPAPI = uri
 
 export default {
   user: { authenticated: false },
-  authenticate (context, credentials) {
+  authenticate(context, credentials) {
 
     //For Demostream
-    if(credentials.email != "" && credentials.password !=""){
+    if (credentials.email != "" && credentials.password != "") {
 
-          /*
-      context.$cookies.set('BP', "DemoAldo", '1D')
-      context.$cookies.set('H1BPidLo', "123", '1D')
-      context.$cookies.set('IjkBPusrnmLo', "Administrador", '1D')
-      router.push('/items')
-      window.location.reload()
-      context.$store.commit("toggle_alert", {
-        color: "green",
-        text: 'Bienvenido a BP'
-      });
-      */
-  
-    var base64encodedData = new Buffer(credentials.email + ':' + credentials.password).toString('base64');
-    const token = Buffer.from(credentials.email + ':' + credentials.password, 'utf8').toString('base64');
+      /*
+  context.$cookies.set('BP', "DemoAldo", '1D')
+  context.$cookies.set('H1BPidLo', "123", '1D')
+  context.$cookies.set('IjkBPusrnmLo', "Administrador", '1D')
+  router.push('/items')
+  window.location.reload()
+  context.$store.commit("toggle_alert", {
+    color: "green",
+    text: 'Bienvenido a BP'
+  });
+  */
 
-    Axios.post(`${BPAPI}/auth`,null, { 
-    headers: {
-      'Host': uri,
-      'Authorization': 'Basic ' + token
-    }
-    })
+      var base64encodedData = new Buffer(credentials.email + ':' + credentials.password).toString('base64');
+      const token = Buffer.from(credentials.email + ':' + credentials.password, 'utf8').toString('base64');
+
+      Axios.post(`${BPAPI}/auth`, null, {
+        headers: {
+          'Host': uri,
+          'Authorization': 'Basic ' + token
+        }
+      })
         .then((response) => {
           //response.data.data.role == '99' Revisar Rol
-          if (true) {
+          if (response.data.user.role == "admin") {
             console.log("probando response")
             console.log(response)
             context.$cookies.set('BP', response.data.token, '1D')
+            context.$cookies.set('BPTYPE', response.data.user.role, '1D')
             context.$cookies.set('H1BPidLo', response.data.user.id, '1D')
             context.$cookies.set('IjkBPusrnmLo', response.data.user.name, '1D')
             router.push('/items')
@@ -49,11 +50,19 @@ export default {
             });
 
             context.loadLogin = false
-          }else{
-              context.$store.commit("toggle_alert", {
-              color: "red",
-              text: 'Porfavor inicio sesión con un usuario del tipo administrador'
+          } else {
+            context.$cookies.set('BP', response.data.token, '1D')
+            context.$cookies.set('BPTYPE', response.data.user.role, '1D')
+            context.$cookies.set('H1BPidLo', response.data.user.id, '1D')
+            context.$cookies.set('IjkBPusrnmLo', response.data.user.name, '1D')
+            router.push('/items')
+            window.location.reload()
+            context.$store.commit("toggle_alert", {
+              color: "green",
+              text: 'Bienvenido a BP'
             });
+
+            context.loadLogin = false
           }
         }).catch((e) => {
           context.loadLogin = false
@@ -61,25 +70,26 @@ export default {
           context.$store.commit("toggle_alert", {
             color: "red",
             text: 'Credenciales inválidas, intente nuevamente'
-          });        })
-        }else{
-          context.$store.commit('toggle_alert', {color: 'red', text: 'Uno o mas campos vacíos'})
-        }
+          });
+        })
+    } else {
+      context.$store.commit('toggle_alert', { color: 'red', text: 'Uno o mas campos vacíos' })
+    }
 
-    
+
   },
-  signout (context, redirect) {
+  signout(context, redirect) {
     router.push('/')
     context.$cookies.remove('BP')
     context.$cookies.remove('H1BPidLo')
     context.$cookies.remove('IjkBPusrnmLo')
     window.location.reload()
   },
-  checkAuthentication () {
+  checkAuthentication() {
     const token = document.cookie
     this.user.authenticated = !!token
   },
-  getAuthenticationHeader (context) {
+  getAuthenticationHeader(context) {
     return `Bearer ${context.$cookies.get('BP')}`
   }
 }
