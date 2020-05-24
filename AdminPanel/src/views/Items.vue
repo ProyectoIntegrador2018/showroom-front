@@ -40,7 +40,7 @@
         </v-container>
 
         <v-card class="mx-auto" :elevation="0">
-            <MyItems @updatePage="updatePage" @updatePerPage="updatePerPage" :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :search="search" :items="items" :light="false" :tags="tags"/>
+            <MyItems @updatePage="updatePage" @updatePerPage="updatePerPage" :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :search="search" :items="items" :light="false" :tags="tags" />
         </v-card>
     </v-container>
 
@@ -59,7 +59,7 @@
                                                 <v-flex sm12 class="pa-1">
                                                     <v-text-field height="40" v-model="newItem.Name" color="#4a6cac" outlined dense style="border-color:coral;">
                                                         <template v-slot:label>
-                                                            <p v-html="'Nombre'"/>
+                                                            <p v-html="'Nombre'" />
                                                         </template>
                                                     </v-text-field>
                                                 </v-flex>
@@ -81,13 +81,36 @@
                                         </v-layout>
                                     </v-flex>
 
-                                    <v-flex xs12 sm4>
-                                        <v-layout column>
-                                            <template>
-                                                <file-pond id="filePond" dark color="primary" :server="getServer(i)" name="files" ref="pond" label-idle="Elegir archivo o arrastrar archivo aquí" :allow-multiple="false" :allow-paste="false" :allow-reorder="false" accepted-file-types="image/jpeg, image/png" v-on:init="handleFilePondInit" />
-                                            </template>
-                                        </v-layout>
+                                    <v-flex xs12 sm4 style="margin-top:3px;">
+                                        <v-flex xs12 sm12>
+                                            <v-layout column>
+                                                <v-text-field height="40" v-model="newItem.img1" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                    <template v-slot:label>
+                                                        <p v-html="'URL Imagen Seccion 1'" />
+                                                    </template>
+                                                </v-text-field>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs12 sm12>
+                                            <v-layout column>
+                                                <v-text-field height="40" v-model="newItem.img2" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                    <template v-slot:label>
+                                                        <p v-html="'URL Imagen Seccion 2'" />
+                                                    </template>
+                                                </v-text-field>
+                                            </v-layout>
+                                        </v-flex>
+                                                                                <v-flex xs12 sm12>
+                                            <v-layout column>
+                                                <v-text-field height="40" v-model="newItem.img3" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                    <template v-slot:label>
+                                                        <p v-html="'URL Imagen Seccion 3'" />
+                                                    </template>
+                                                </v-text-field>
+                                            </v-layout>
+                                        </v-flex>
                                     </v-flex>
+
                                 </v-layout>
                             </v-container>
                         </v-flex>
@@ -126,9 +149,12 @@ export default {
         totalLength: 0,
         rowsPerPage: 10,
         page: 1,
-        newItem:{
-            Name:"",
-            Desc:""
+        newItem: {
+            Name: "",
+            Desc: "",
+            img1: "",
+            img2: "",
+            img3: "",
         },
         search: "",
         dialog: false,
@@ -163,18 +189,18 @@ export default {
     },
     methods: {
         getServer(i) {
-        var server = {
-            process: (fieldName, file, metadata, load, error, progress, abort) => {
-            const formData = new FormData();
-            formData.append(fieldName, file, file.name);
-            this.rows[0].images[i].title = URL.createObjectURL(file);
-            if (i == 0) {
-                this.imageform1 = formData;
-            }
-            abort();
-            }
-        };
-        return server;
+            var server = {
+                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    const formData = new FormData();
+                    formData.append(fieldName, file, file.name);
+                    this.rows[0].images[i].title = URL.createObjectURL(file);
+                    if (i == 0) {
+                        this.imageform1 = formData;
+                    }
+                    abort();
+                }
+            };
+            return server;
         },
         updatePage(page) {
             this.page = page;
@@ -185,30 +211,30 @@ export default {
             this.getHistorial();
         },
         getTags() {
-                //SetItems
-                this.tags = [];
-                db.get(
-                        `${BAPI}/tags/`, {
-                            headers: {
-                                Authorization: authentication.getAuthenticationHeader(this)
-                            },
-                            params: {}
-                        }
-                    )
-                    .then(response => {
+            //SetItems
+            this.tags = [];
+            db.get(
+                    `${BAPI}/tags/`, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    }
+                )
+                .then(response => {
 
-                        for (var i = 0; i < response.data.length; i++) {
-                            console.log(i)
-                                this.tags.push(response.data[i].name)
-                            }
-                        console.log("mis tags",this.tags)
-                    })
-                    .catch(error => {
-                        this.$store.commit("toggle_alert", {
-                            color: "red",
-                            text: error.message
-                        });
+                    for (var i = 0; i < response.data.length; i++) {
+                        console.log(i)
+                        this.tags.push(response.data[i].name)
+                    }
+                    console.log("mis tags", this.tags)
+                })
+                .catch(error => {
+                    this.$store.commit("toggle_alert", {
+                        color: "red",
+                        text: error.message
                     });
+                });
         },
         getItems() {
             //SetItems
@@ -232,69 +258,69 @@ export default {
                     });
                 });
         },
-        createItem(){
-            if(this.newItem.Name != "" && this.newItem.Desc){
+        createItem() {
+            if (this.newItem.Name != "" && this.newItem.Desc) {
                 var body = new URLSearchParams();
                 body.append("name", this.newItem.Name);
                 body.append("desciption1", this.newItem.Desc);
-                body.append("tags", this.value)
-                Axios.post(`${BAPI}/items`,body,{
-            headers: {
-              Authorization: authentication.getAuthenticationHeader(this)
-            },
-            params: {}
-          })
-            .then(res => {
-              return res.data;
-            })
-            .then(res => {
-              if(this.imageform1 != null){
-              return Promise.all([
-                Axios.post(
-                  `${BAPI}/api/${res.data.id}/images/`,
-                  this.imageform1
-                )
-              ]);
-              }
-            })
-            .then(res => {
-              this.loader = null
-              this.waitforload = false
-              this.dialog = false;
-              this.$store.commit("toggle_alert", {
-                color: "green",
-                text: "Registro exitoso!"
-              });
-            this.newItem.Name = ""
-            this.newItem.Desc = ""
-            this.getItems()
-            })
-            .catch(err => {
-              this.loader = null
-              this.waitforload = false
-              console.warn(err);
-              this.$store.commit("toggle_alert", {
-                color: "error",
-                text: err.response.data.message
-              });
-            });
-        } else {
-          this.loader = null
-          this.waitforload = false
-          console.warn("No se puede registrar, faltan obligatorios");
-          this.$store.commit("toggle_alert", {
-            color: "red",
-            text: "Las contraseñas deben de ser iguales"
-          });
-        }
+                body.append("tags", this.value)
+                Axios.post(`${BAPI}/items`, body, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    })
+                    .then(res => {
+                        return res.data;
+                    })
+                    .then(res => {
+                        if (this.imageform1 != null) {
+                            return Promise.all([
+                                Axios.post(
+                                    `${BAPI}/api/${res.data.id}/images/`,
+                                    this.imageform1
+                                )
+                            ]);
+                        }
+                    })
+                    .then(res => {
+                        this.loader = null
+                        this.waitforload = false
+                        this.dialog = false;
+                        this.$store.commit("toggle_alert", {
+                            color: "green",
+                            text: "Registro exitoso!"
+                        });
+                        this.newItem.Name = ""
+                        this.newItem.Desc = ""
+                        this.getItems()
+                    })
+                    .catch(err => {
+                        this.loader = null
+                        this.waitforload = false
+                        console.warn(err);
+                        this.$store.commit("toggle_alert", {
+                            color: "error",
+                            text: err.response.data.message
+                        });
+                    });
+            } else {
+                this.loader = null
+                this.waitforload = false
+                console.warn("No se puede registrar, faltan obligatorios");
+                this.$store.commit("toggle_alert", {
+                    color: "red",
+                    text: "Las contraseñas deben de ser iguales"
+                });
+            }
         },
         handleFilePondInit: function (a) {
 
         },
     },
     mounted() {
-            this.getItems()
-            this.getTags()
+        this.getItems()
+        this.getTags()
     },
     components: {
         MyItems: () => import("@/components/viewComponents/Items/Items-Table")
