@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@1.5.16/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Blue People | Recuperar contraseña</title>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-container class="passContainer" fluid>
+                <img class="blueLogo" src="https://www.bluepeople.com/assets/images/base/bluepeople_b.png" width="50%"
+                    height="100%" alt="Logo Blue People">
+
+                <v-form v-model="passForm">
+                    <v-text-field label="Token" v-model="token" type="text" :disabled="true"></v-text-field>
+
+                    <v-text-field label="Nueva contraseña" v-model="password" type="password" required
+                        :rules="[() => password.length > 5 || 'Mínimo 6 caracteres.']"></v-text-field>
+                    <v-text-field label="Repetir contraseña" v-model="passwordRepeat" type="password" required
+                        :rules="[() => (passwordRepeat == password && passwordRepeat.length > 5) || 'Las contraseñas no coinciden']">
+                    </v-text-field>
+                </v-form>
+
+                <v-btn block color="blue" @click="sendNewPass" :dark="passForm"
+                    :disabled="!passForm || isAuthenticating">Enviar</v-btn>
+            </v-container>
+
+            <!-- Dialogs -->
+            <v-dialog v-model="dialogUpdatePass" max-width="290" persistent>
+                <v-card>
+                    <v-card-title class="headline">Contraseña actualizada</v-card-title>
+                    <v-card-text>Se ha actualizado la contraseña.</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn dark @click="dialogUpdatePass = false">Aceptar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="dialogErrorServer" max-width="290" persistent>
+                <v-card>
+                    <v-card-title class="headline">Error</v-card-title>
+                    <v-card-text>Error conectando con el servidor, revisa tu conexión a internet.</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn dark @click="dialogErrorServer = false">Aceptar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </v-app>
+    </div>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@1.5.16/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/vue-resource"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    dialogUpdatePass: false,
+                    passForm: false,
+                    isAuthenticating: false,
+                    dialogErrorServer: false,
+                    password: '',
+                    passwordRepeat: '',
+                    link: '',
+                    token: ''
+                }
+            },
+            methods: {
+                sendNewPass() {
+                    this.isAuthenticating = true;
+
+                    var options = {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                    var passUpdateBody = {
+                        password: this.password
+                    }
+
+                    this.$http.put('https://shrouded-plains-43003.herokuapp.com' + this.token, passUpdateBody, options).then(response => {
+                        this.dialogUpdatePass = true;
+                        this.isAuthenticating = false;
+                    }, response => {
+                        if (response.status === 0) {
+                            this.dialogErrorServer = true;
+                            this.isAuthenticating = false;
+                        }
+                    })
+                },
+                setToken() {
+                    this.token = document.location.search;
+                    this.token = this.token.slice(1);
+                }
+            },
+            mounted() {
+                this.setToken();
+            }
+        });
+    </script>
+
+    <style>
+        .blueLogo {
+            margin-top: 20vw;
+            width: 20vw;
+            height: 12vw;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+
+</body>
+
+</html>
