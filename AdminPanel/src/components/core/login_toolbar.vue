@@ -76,7 +76,7 @@
 
                             <v-flex xs12 sm4 style="margin-left:1%">
                                 <br>
-                                <v-btn width="100%" color="#4A6BAE" v-on="on" @click.native="submitAuthentication()" dark>Iniciar Sesión</v-btn>
+                                <v-btn width="100%" color="#4A6BAE" @click.native="submitAuthentication()" dark>Iniciar Sesión</v-btn>
                             </v-flex>
 
                             <v-flex xs12 sm4 style="margin-top: 10vh;">
@@ -88,7 +88,7 @@
 
                             <v-flex xs12 sm4 style="margin-left:1%">
                                 <br>
-                                <v-btn width="100%" color="#4A6BAE" v-on="on" @click.native="dialog = true" dark>Recuperar Contraseña</v-btn>
+                                <v-btn width="100%" color="#4A6BAE" @click.native="dialog = true" dark>Recuperar Contraseña</v-btn>
                             </v-flex>
 
                             <v-flex xs12 sm4 style="margin-top: 10vh;">
@@ -164,6 +164,20 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="dialogEmail" max-width="800" content-class="dialog-radius">
+      <v-card>
+        <v-card-title class="headline" style="justify-content:left;color:#809DED;">Email de recuperación enviado</v-card-title>
+        <v-card-actions style="justify-content: center;">
+          <v-btn
+            depressed
+            style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
+            @click="dialogEmail = false"
+            color="#809DED"
+          >Aceptar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <br />
     <br />
 
@@ -173,6 +187,7 @@
 <script>
 import Authentication from '@/components/Authentication'
 import router from '@/router'
+import Axios from "axios";
 
 export default {
     beforeMount() {
@@ -183,6 +198,7 @@ export default {
     data: () => ({
         loginPasswordVisible: false,
         dialog: false,
+        dialogEmail: false,
         email: "",
         isBooted: false,
         smallLogo: "https://pbs.twimg.com/profile_images/991710919456509952/CFSBX8vW_400x400.jpg",
@@ -200,7 +216,30 @@ export default {
             Authentication.authenticate(this, this.credentials)
         },
         RecoverPass(){
+            var vm = this
+            let body = {
+                email: this.email
+            }
 
+            Axios.post(`${BAPI}/password-resets`, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                console.log('Email sent successfully')
+                console.log(res.data)
+                vm.dialogEmail = true
+                return res.data;
+            })
+            .catch(err => {
+                console.log(err)
+                console.warn(err);
+                this.$store.commit("toggle_alert", {
+                    color: "error",
+                    text: err.response.data.message
+                });
+            });
             //after recover call
             this.dialog = false
         }

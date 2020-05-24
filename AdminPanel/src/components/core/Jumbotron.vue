@@ -1,6 +1,5 @@
 <template>
-  <div
-    :style="!loggedIn ? 'background-color: white;' : 'background-color: white;'">
+  <div>
     <login-toolbar></login-toolbar>
   </div>
 </template>

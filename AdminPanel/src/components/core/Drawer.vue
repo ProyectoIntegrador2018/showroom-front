@@ -48,8 +48,7 @@
                 <template 
                   v-slot:activator="{ on }"
                 >
-                  <span 
-                    v-on="on">
+                  <span>
                     <div
                       :class="getNavClass(item.to)">
                       <v-icon
