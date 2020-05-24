@@ -2,7 +2,7 @@
   <div class='home'>
     <CoreNavBar></CoreNavBar>
     <CoreHeader></CoreHeader>
-    <CoreCardItem></CoreCardItem>
+    <Links></Links>
   </div>
 
 </template>
@@ -14,7 +14,7 @@ export default {
   components: {
     CoreHeader: () => import('@/components/Header'),
     CoreNavBar: () => import('@/components/NavBar'),
-    CoreCardItem: () => import('@/components/Items/CardItem')
+    Links: () => import('@/components/Items/LinksItem')
   },
   computed: mapState(['items','tags','title_cont_1','title_cont_2','title_cont_3','cont_1','cont_2','cont_3','distinct_tags','details_item','id_details','tag_search']),
   created(){

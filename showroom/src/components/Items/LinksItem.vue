@@ -2,13 +2,13 @@
 <div class="container-fluid">
     <div class="row rowCards">
         <div class="card-group col-12 nopadding" id="searchAnchor">
-            <v-flex xs12 sm4 md4 v-for="(itemObj,i) in items" :key="`${i}-${itemObj.name}`">
-                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg" @click="displayDetails(itemObj._id)">
+            <v-flex xs12 sm4 md4 v-for="(linkObj,i) in links" :key="`${i}-${linkObj.d}`">
+                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg" @click="displayDetails(linkObj._id)">
                     <img :src="itemObj.img_principal" class="card-img h-100" alt="...">
                     <div class="card-img-overlay">
-                        <h1 class="card-title">{{itemObj.name}}</h1>
+                        <h1 class="card-d">{{itemObj.d}}</h1>
                         <div class="overlay">
-                            <p class="card-text">{{itemObj.desciption1}}</p>
+                            <p class="card-text">{{itemObj.title_descr_1}}</p>
                         </div>
                         <div class="badge-position">
                             <ul v-for="(tag,j) in itemObj.tags" :key="j"> <a href="#" class="badge badge-pill badge-primary"> {{tag}} </a></ul>
@@ -45,7 +45,7 @@ export default {
         cards: [
 
             {
-                title: 'Proyecto 1',
+                d: 'Proyecto 1',
                 subtitle: 'Subtitulo de proyecto',
                 src: require('@/assets/Proy1.png'),
                 tags: "Financiero"
@@ -56,7 +56,7 @@ export default {
     components: {
         DetailedItem: () => import('@/components/DetailsItem'),
     },
-    computed: mapState(['items']),
+    computed: mapState(['links']),
 
     methods: {
         displayDetails(itemId) {
@@ -80,7 +80,7 @@ export default {
     height: 500px;
 }
 
-.card-title {
+.card-d {
     color: #ffffff;
 }
 

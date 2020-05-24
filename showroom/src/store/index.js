@@ -5,8 +5,7 @@ import VueAxios from "vue-axios";
 
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
-
-Vue.axios.defaults.baseURL = "https://quiet-cliffs-83666.herokuapp.com/";
+Vue.axios.defaults.baseURL = "https://shrouded-plains-43003.herokuapp.com/";
 
 export default new Vuex.Store({
   state: {
