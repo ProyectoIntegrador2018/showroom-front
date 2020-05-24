@@ -105,6 +105,38 @@
                                         </v-layout>
                                     </v-flex>
 
+                                    <v-flex sm3 class="pa-1">
+                                        <v-text-field v-model="newLink.Categories[0]" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Categoria 1'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm3 class="pa-1">
+                                        <v-text-field v-model="newLink.Categories[1]" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Categoria 2'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm3 class="pa-1">
+                                        <v-text-field v-model="newLink.Categories[2]" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Categoria 3'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm3 class="pa-1">
+                                        <v-text-field v-model="newLink.Categories[3]" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Categoria 4'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
                                     <v-flex sm6 class="pa-1">
                                         <v-text-field v-model="newLink.Title1" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
@@ -113,7 +145,7 @@
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-flex sm6 class="pa-1">
+                                    <v-flex sm3 class="pa-1">
                                         <v-text-field v-model="newLink.Value1" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 1'" />
@@ -129,7 +161,7 @@
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-flex sm6 class="pa-1">
+                                    <v-flex sm3 class="pa-1">
                                         <v-text-field v-model="newLink.Value2" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 2'" />
@@ -145,7 +177,7 @@
                                         </v-text-field>
                                     </v-flex>
 
-                                    <v-flex sm6 class="pa-1">
+                                    <v-flex sm3 class="pa-1">
                                         <v-text-field v-model="newLink.Value3" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 3'" />
@@ -197,6 +229,7 @@ export default {
             Name: "",
             Desc: "",
             UserContact: "",
+            Categories: [],
             Title1: "",
             Title2: "",
             Title3: "",
@@ -325,6 +358,7 @@ export default {
                 body.append("statValue1", this.newLink.Value1)
                 body.append("statValue2", this.newLink.Value2)
                 body.append("statValue3", this.newLink.Value3)
+                body.append("categories", this.newLink.Categories)
 
                 Axios.post(`${BAPI}/links`, body, {
                         headers: {
@@ -362,7 +396,8 @@ export default {
                         this.newLink.Title3 = "",
                         this.newLink.Value1 = "",
                         this.newLink.Value2 = "",
-                        this.newLink.Value3 = ""
+                        this.newLink.Value3 = "",
+                        this.newLink.Categories = []
                     })
                     .catch(err => {
                         this.loader = null
