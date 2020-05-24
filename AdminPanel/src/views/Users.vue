@@ -178,11 +178,11 @@ export default {
     methods: {
         updatePage(page) {
             this.page = page;
-            this.getHistorial();
+            // this.getHistorial();
         },
         updatePerPage(per) {
             this.rowsPerPage = per;
-            this.getHistorial();
+            // this.getHistorial();
         },
         getServer(i) {
             var server = {
@@ -200,11 +200,11 @@ export default {
         },
         updatePage(page) {
             this.page = page;
-            this.getHistorial();
+            // this.getHistorial();
         },
         updatePerPage(per) {
             this.rowsPerPage = per;
-            this.getHistorial();
+            // this.getHistorial();
         },
         getTags() {
             //SetItems

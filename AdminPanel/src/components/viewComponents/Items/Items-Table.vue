@@ -121,7 +121,7 @@
                                         </v-flex>
                                         <v-flex sm12 class="pa-1">
                                             <v-select
-                                            v-model="value"
+                                            v-model="tagsValue"
                                             outlined
                                             :items="tags"
                                             attach
@@ -155,26 +155,6 @@
                                                 </v-textarea>
                                         </v-flex>
                                     </v-flex>
-                                </v-layout>
-                                </v-flex>
-
-                                <v-flex xs12 sm4>
-                                <v-layout column>
-                                    <template>
-                                        <file-pond
-                                        id="filePond"
-                                        dark
-                                        color="primary"
-                                        name="files"
-                                        ref="pond"
-                                        label-idle="Elegir archivo o arrastrar archivo aquí"
-                                        :allow-multiple="false"
-                                        :allow-paste="false"
-                                        :allow-reorder="false"
-                                        accepted-file-types="image/jpeg, image/png"
-                                        v-on:init="handleFilePondInit"
-                                        />
-                                    </template>
                                 </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -217,6 +197,7 @@ export default {
     deletdialog: false,
     Name:"",
     Desc:"",
+    tagsValue:[],
     myitem:"",
     editedItem: {
 
@@ -342,7 +323,7 @@ export default {
         var body = new URLSearchParams();
                 body.append("name", this.Name);
                 body.append("desciption1", this.Desc);
-                body.append("tags", this.value)
+                body.append("tags", this.tagsValue)
         db.put(
           `${BAPI}/items/${this.myitem}`,
           body,

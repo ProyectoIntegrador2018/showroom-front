@@ -64,7 +64,7 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" outlined :items="tags" attach color="#4a6cac" chips label="Tags" multiple>
+                                                    <v-select v-model="newItem.Tags" outlined :items="tags" attach color="#4a6cac" chips label="Tags" multiple>
                                                         <template v-slot:label>
                                                             <p v-html="'Tags'" />
                                                         </template>
@@ -155,6 +155,7 @@ export default {
             img1: "",
             img2: "",
             img3: "",
+            Tags: []
         },
         search: "",
         dialog: false,
@@ -204,11 +205,11 @@ export default {
         },
         updatePage(page) {
             this.page = page;
-            this.getHistorial();
+            // this.getHistorial();
         },
         updatePerPage(per) {
             this.rowsPerPage = per;
-            this.getHistorial();
+            // this.getHistorial();
         },
         getTags() {
             //SetItems
@@ -263,7 +264,7 @@ export default {
                 var body = new URLSearchParams();
                 body.append("name", this.newItem.Name);
                 body.append("desciption1", this.newItem.Desc);
-                body.append("tags", this.value)
+                body.append("tags", this.newItem.Tags)
                 Axios.post(`${BAPI}/items`, body, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)

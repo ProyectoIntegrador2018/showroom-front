@@ -296,11 +296,11 @@ export default {
     methods: {
         updatePage(page) {
             this.page = page;
-            this.getHistorial();
+            // this.getHistorial();
         },
         updatePerPage(per) {
             this.rowsPerPage = per;
-            this.getHistorial();
+            // this.getHistorial();
         },
         getMyItems() {
             this.MyItems = [];
