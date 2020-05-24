@@ -106,7 +106,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Title1" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Titulo Estadistica 1'" />
                                             </template>
@@ -114,7 +114,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Value1" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 1'" />
                                             </template>
@@ -122,7 +122,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Title2" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Titulo Estadistica 2'" />
                                             </template>
@@ -130,7 +130,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Value2" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 2'" />
                                             </template>
@@ -138,7 +138,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Title3" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Titulo Estadistica 3'" />
                                             </template>
@@ -146,7 +146,7 @@
                                     </v-flex>
 
                                     <v-flex sm6 class="pa-1">
-                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                        <v-text-field v-model="newLink.Value3" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
                                             <template v-slot:label>
                                                 <p v-html="'Valor Estadistica 3'" />
                                             </template>
@@ -196,7 +196,13 @@ export default {
         newLink: {
             Name: "",
             Desc: "",
-            UserContact: ""
+            UserContact: "",
+            Title1: "",
+            Title2: "",
+            Title3: "",
+            Value1: "",
+            Value2: "",
+            Value3: ""
         },
         dialog: false,
         added: [{
@@ -313,6 +319,12 @@ export default {
                 body.append("name", this.newLink.Name);
                 body.append("description", this.newLink.Desc)
                 body.append("clientName", this.newLink.UserContact)
+                body.append("statTitle1", this.newLink.Title1)
+                body.append("statTitle2", this.newLink.Title2)
+                body.append("statTitle3", this.newLink.Title3)
+                body.append("statValue1", this.newLink.Value1)
+                body.append("statValue2", this.newLink.Value2)
+                body.append("statValue3", this.newLink.Value3)
 
                 Axios.post(`${BAPI}/links`, body, {
                         headers: {
@@ -345,6 +357,12 @@ export default {
                         this.newLink.Name = ""
                         this.newLink.Desc = ""
                         this.newLink.UserContact = ""
+                        this.newLink.Title1 = "",
+                        this.newLink.Title2 = "",
+                        this.newLink.Title3 = "",
+                        this.newLink.Value1 = "",
+                        this.newLink.Value2 = "",
+                        this.newLink.Value3 = ""
                     })
                     .catch(err => {
                         this.loader = null
