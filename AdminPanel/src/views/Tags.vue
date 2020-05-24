@@ -65,9 +65,11 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <template>
-                                                        <file-pond id="filePond" dark color="primary" name="files" ref="pond" label-idle="Elegir archivo o arrastrar archivo aquí" :server="getServer(i)" :allow-multiple="false" :allow-paste="false" :allow-reorder="false" accepted-file-types="image/jpeg, image/png" v-on:init="handleFilePondInit" />
-                                                    </template>
+                                                    <v-text-field v-model="newTag.image" height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Tag Logo URL'" />
+                                                        </template>
+                                                    </v-text-field>
                                                 </v-flex>
                                             </v-flex>
                                         </v-layout>
@@ -112,6 +114,7 @@ export default {
         page: 1,
         newTag:{
             Name:"",
+            image:""
         },
         search: "",
         dialog: false,
