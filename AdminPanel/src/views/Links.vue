@@ -91,7 +91,7 @@
                                     <v-flex xs12 sm4>
                                         <v-layout column>
                                             <template>
-                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headers" :items="value" hide-default-footer item-key="_id" >
+                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headers" :items="value" hide-default-footer item-key="_id">
                                                     <template v-slot:item="props">
                                                         <tr>
                                                             <td class="request-td">{{props.item.name}}</td>
@@ -104,6 +104,55 @@
                                             </template>
                                         </v-layout>
                                     </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Titulo Estadistica 1'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Valor Estadistica 1'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Titulo Estadistica 2'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Valor Estadistica 2'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Titulo Estadistica 3'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex sm6 class="pa-1">
+                                        <v-text-field height="40" color="#4a6cac" outlined dense style="border-color:coral;">
+                                            <template v-slot:label>
+                                                <p v-html="'Valor Estadistica 3'" />
+                                            </template>
+                                        </v-text-field>
+                                    </v-flex>
+
                                 </v-layout>
                             </v-container>
                         </v-flex>
@@ -143,7 +192,7 @@ export default {
         rowsPerPage: 10,
         search: "",
         page: 1,
-        MyItems:[],
+        MyItems: [],
         newLink: {
             Name: "",
             Desc: "",
@@ -226,7 +275,7 @@ export default {
                 )
                 .then(response => {
                     for (var i = 0; i < response.data.length; i++) {
-                                this.MyItems.push(response.data[i].name)
+                        this.MyItems.push(response.data[i].name)
                     }
                     console.log(this.MyItems)
                 })
@@ -259,61 +308,61 @@ export default {
                 });
         },
         createItem() {
-            if(this.newLink.Name != "" && this.newLink.Desc){
+            if (this.newLink.Name != "" && this.newLink.Desc) {
                 var body = new URLSearchParams();
                 body.append("name", this.newLink.Name);
                 body.append("description", this.newLink.Desc)
                 body.append("clientName", this.newLink.UserContact)
 
-                Axios.post(`${BAPI}/links`,body,{
-            headers: {
-              Authorization: authentication.getAuthenticationHeader(this)
-            },
-            params: {}
-          })
-                .then(res => {
-                  return res.data;
-                })
-                .then(res => {
-                  if(this.imageform1 != null){
-                  return Promise.all([
-                    Axios.post(
-                      `${BAPI}/api/${res.data.id}/images/`,
-                      this.imageform1
-                    )
-                  ]);
-                  }
-                })
-                .then(res => {
-                  this.loader = null
-                  this.waitforload = false
-                  this.dialog = false;
-                  this.getItems()
-                  this.$store.commit("toggle_alert", {
-                    color: "green",
-                    text: "Registro exitoso!"
-                  });
-                this.newLink.Name = ""
-                this.newLink.Desc = ""
-                this.newLink.UserContact = ""
-                })
-                .catch(err => {
-                  this.loader = null
-                  this.waitforload = false
-                  console.warn(err);
-                  this.$store.commit("toggle_alert", {
-                    color: "error",
-                    text: err.response.data.message
-                  });
-                });
+                Axios.post(`${BAPI}/links`, body, {
+                        headers: {
+                            Authorization: authentication.getAuthenticationHeader(this)
+                        },
+                        params: {}
+                    })
+                    .then(res => {
+                        return res.data;
+                    })
+                    .then(res => {
+                        if (this.imageform1 != null) {
+                            return Promise.all([
+                                Axios.post(
+                                    `${BAPI}/api/${res.data.id}/images/`,
+                                    this.imageform1
+                                )
+                            ]);
+                        }
+                    })
+                    .then(res => {
+                        this.loader = null
+                        this.waitforload = false
+                        this.dialog = false;
+                        this.getItems()
+                        this.$store.commit("toggle_alert", {
+                            color: "green",
+                            text: "Registro exitoso!"
+                        });
+                        this.newLink.Name = ""
+                        this.newLink.Desc = ""
+                        this.newLink.UserContact = ""
+                    })
+                    .catch(err => {
+                        this.loader = null
+                        this.waitforload = false
+                        console.warn(err);
+                        this.$store.commit("toggle_alert", {
+                            color: "error",
+                            text: err.response.data.message
+                        });
+                    });
             } else {
-              this.loader = null
-              this.waitforload = false
-              console.warn("No se puede registrar, faltan obligatorios");
-              this.$store.commit("toggle_alert", {
-                color: "red",
-                text: "Las contraseñas deben de ser iguales"
-              });
+                this.loader = null
+                this.waitforload = false
+                console.warn("No se puede registrar, faltan obligatorios");
+                this.$store.commit("toggle_alert", {
+                    color: "red",
+                    text: "Las contraseñas deben de ser iguales"
+                });
             }
         },
         handleFilePondInit: function (a) {}
