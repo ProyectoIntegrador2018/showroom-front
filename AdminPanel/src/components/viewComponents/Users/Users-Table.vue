@@ -9,7 +9,8 @@
                     <td class="request-td">{{props.item.email}}</td>
                     <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
                         <v-icon small class="mr-7" @click="editItem(props.item)" color="black">mdi-pencil</v-icon>
-                        <v-icon small @click="deleteUser(props.item)" color="black">mdi-delete</v-icon>
+                        <v-icon small class="mr-7" @click="deleteUser(props.item)" color="black">mdi-delete</v-icon>
+                        <v-icon small @click="changepassword(props.item)" color="black">mdi-reload</v-icon>
                     </td>
                 </tr>
             </template>
@@ -107,6 +108,41 @@
         </v-card>
     </v-dialog>
 
+        <v-dialog v-model="passdialog" max-width="800" content-class="dialog-radius">
+        <v-card>
+            <v-card-title class="headline" style="justify-content:left;color:#809DED;">Cambiar Contraseña</v-card-title>
+            <v-card-text>
+                <v-container class="pa-0" grid-list-md text-xs-center>
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <v-container class="pa-0" grid-list-md text-xs-left>
+                                <v-layout row wrap>
+                                    <v-flex xs12 sm12>
+                                        <v-layout column>
+                                            <v-flex sm12 class="pa-1">
+                                                <v-flex sm12 class="pa-1">
+                                                    <v-text-field height="40" v-model="mypass" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Contraseña nueva'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-card-text>
+            <v-card-actions style="justify-content: center;">
+                <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="passdialog = false" dark>Cancelar</v-btn>
+                <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="changepass()" color="#809DED">Aceptar</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+
 </div>
 </template>
 
@@ -117,10 +153,12 @@ export default {
         currentPage: 0,
         expand: false,
         dialog: false,
+        passdialog: false,
         myitems: [],
         descriptiondialog: false,
         editdialog: false,
         deletdialog: false,
+        mypass:"",
         name:"",
         email:"",
         password:"",
@@ -214,11 +252,28 @@ export default {
             var formattedDate = new Date(date);
             return formattedDate.toDateString();
         },
+        changepassword(item){
+            this.passdialog = true
+            this.myitem = item.id
+            this.mypass = ""
+        },
         editItem(item) {
             this.editdialog = true
             this.myitem = item.id
             this.name = item.name
             this.email = item.email
+        },
+        changepass(){
+            if (this.mypass != "" ) {
+
+                //after call
+                this.passdialog = false
+            }else{
+                this.$store.commit("toggle_alert", {
+                    color: "red",
+                    text: "Porfavor llenar todos los campos obligatorios"
+                });
+            }
         },
         editUser() {
             console.log("Editando inversion");
