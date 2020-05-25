@@ -118,23 +118,6 @@
                                             </template>
                                             </v-text-field>
                                         </v-flex>
-                                        <v-flex sm12 class="pa-1">
-                                            <template>
-                                                <file-pond
-                                                id="filePond"
-                                                dark
-                                                color="primary"
-                                                name="files"
-                                                ref="pond"
-                                                label-idle="Elegir archivo o arrastrar archivo aquí"
-                                                :allow-multiple="false"
-                                                :allow-paste="false"
-                                                :allow-reorder="false"
-                                                accepted-file-types="image/jpeg, image/png"
-                                                v-on:init="handleFilePondInit"
-                                                />
-                                            </template>
-                                        </v-flex>
                                     </v-flex>
                                 </v-layout>
                                 </v-flex>

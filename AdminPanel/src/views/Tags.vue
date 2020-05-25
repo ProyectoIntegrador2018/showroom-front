@@ -41,7 +41,7 @@
         </v-container>
 
         <v-card class="mx-auto" :elevation="0">
-            <MyTags @updatePage="updatePage" @updatePerPage="updatePerPage" :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :items="items" :light="false" :search="search" />
+            <MyTags :totalLength="totalLength" :pageCount="pageCount" :page="page" :rowsPerPage="rowsPerPage" :items="items" :light="false" :search="search" />
         </v-card>
     </v-container>
 
