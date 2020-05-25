@@ -117,6 +117,16 @@ export default {
   created () {
    this.currentId = this.$route.params.id
    this.getlink()
+  },
+  mounted () {
+    window.addEventListener("scroll", function () {
+        const nav = document.querySelector('#mainNav');
+        if (this.scrollY > 80) {
+            nav.style.backgroundImage = "url(/img/wallpaper.57a95dba.jpg)";
+        } else {
+            nav.style.backgroundImage = 'none';
+        }
+    })
   }
 }
 </script>
