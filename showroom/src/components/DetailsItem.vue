@@ -9,9 +9,25 @@
                         <v-container class="pa-0" grid-list-md text-xs-left>
                             <v-layout row wrap>
                                 <v-flex xs12 sm3>
+
+                                        <ul class="nav nav-tabs">
+                                            <li>
+                                                <a class="nav-link active" @click="showImg1()" :style="{'color':coli1,'cursor':'pointer'}">Imagen 1</a>
+                                            </li>
+                                            <li>
+                                                <a class="nav-link active" @click="showImg2()" :style="{'color':coli2,'cursor':'pointer'}">Imagen 2</a>
+                                            </li>
+                                    
+                                        </ul>
+
                                     <v-layout column>
                                         <v-flex xs12 sm12 class="pa-1">
-                                            <v-img :src="data.image" style="border-radius: 10px;"></v-img>
+                                            <div v-if="seli1"> 
+                                            <v-img :src="data.cardImg1" style="border-radius: 10px;"></v-img>
+                                            </div>
+                                            <div v-else-if="seli2">
+                                            <v-img :src="data.cardImg2" style="border-radius: 10px;"></v-img>
+                                            </div>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -126,6 +142,10 @@ export default {
       col1: "blue",
       col2: "gray",
       col3: "gray",
+      coli1: "blue",
+      coli2: "gray",
+      seli1: true,
+      seli2: false
     }
   },
   mounted () {
@@ -133,7 +153,6 @@ export default {
   },
   methods:{
       showDesc1(){
-          console.log("hue")
           this.col1 = "blue"
           this.col2 = "gray"
           this.col3 = "gray"
@@ -156,7 +175,19 @@ export default {
           this.col1 = "gray"
           this.col2 = "gray"
           this.col3 = "blue"
-      }
+      },
+      showImg1(){
+          this.coli1 = "blue"
+          this.coli2 = "gray"
+          this.seli1 = true
+          this.seli2 = false
+      },
+      showImg2(){
+          this.coli1 = "gray"
+          this.coli2 = "blue"
+          this.seli1 = false
+          this.seli2 = true
+      },
   },
 }
 </script>
