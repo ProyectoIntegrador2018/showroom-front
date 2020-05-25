@@ -64,6 +64,60 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
+                                                    <v-text-field height="40" v-model="newItem.subtitle" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Subtitulo'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+
+                                                <v-layout row wrap>
+                                                    <v-flex sm4 class="pa-1">
+                                                        <v-text-field height="40" v-model="newItem.title1" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                            <template v-slot:label>
+                                                                <p v-html="'Titulo 1'" />
+                                                            </template>
+                                                        </v-text-field>
+                                                    </v-flex>
+                                                    <v-flex sm4 class="pa-1">
+                                                        <v-text-field height="40" v-model="newItem.title2" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                            <template v-slot:label>
+                                                                <p v-html="'Titulo 2'" />
+                                                            </template>
+                                                        </v-text-field>
+                                                    </v-flex>
+                                                    <v-flex sm4 class="pa-1">
+                                                        <v-text-field height="40" v-model="newItem.title3" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                            <template v-slot:label>
+                                                                <p v-html="'Titulo 3'" />
+                                                            </template>
+                                                        </v-text-field>
+                                                    </v-flex>
+                                                </v-layout>
+
+                                                <v-flex sm12 class="pa-1">
+                                                    <v-text-field height="40" v-model="newItem.description1" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Descripcion 1'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+                                                <v-flex sm12 class="pa-1">
+                                                    <v-text-field height="40" v-model="newItem.description2" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Descripcion 2'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+                                                <v-flex sm12 class="pa-1">
+                                                    <v-text-field height="40" v-model="newItem.description3" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                        <template v-slot:label>
+                                                            <p v-html="'Descripcion 3'" />
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-flex>
+
+                                                <v-flex sm12 class="pa-1">
                                                     <v-select v-model="newItem.Tags" outlined :items="tags" attach color="#4a6cac" chips label="Tags" multiple>
                                                         <template v-slot:label>
                                                             <p v-html="'Tags'" />
@@ -71,17 +125,26 @@
                                                     </v-select>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-textarea dense v-model="newItem.Desc" outlined rows="5" row-height="45" :rules="[v => !!v || 'La descripción es requerida']" required color="#4a6cac" counter maxlength="250" style="border-color:coral;">
+                                                    <v-select v-model="newItem.userContact" outlined :items="users" item-text="name" item-value="id" attach color="#4a6cac" chips label="Usuario de contacto">
                                                         <template v-slot:label>
-                                                            <p v-html="'Descripción'" />
+                                                            <p v-html="'Usuario de contacto'" />
                                                         </template>
-                                                    </v-textarea>
+                                                    </v-select>
                                                 </v-flex>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
 
                                     <v-flex xs12 sm4 style="margin-top:3px;">
+                                        <v-flex xs12 sm12>
+                                            <v-layout column>
+                                                <v-text-field height="40" v-model="newItem.imgMain" color="#4a6cac" outlined dense style="border-color:coral;">
+                                                    <template v-slot:label>
+                                                        <p v-html="'URL Imagen Principal'" />
+                                                    </template>
+                                                </v-text-field>
+                                            </v-layout>
+                                        </v-flex>
                                         <v-flex xs12 sm12>
                                             <v-layout column>
                                                 <v-text-field height="40" v-model="newItem.img1" color="#4a6cac" outlined dense style="border-color:coral;">
@@ -151,11 +214,19 @@ export default {
         page: 1,
         newItem: {
             Name: "",
-            Desc: "",
+            subtitle: "",
+            title1: "",
+            title2: "",
+            title3: "",
+            description1: "",
+            description2: "",
+            description3: "",
+            imgMain: "",
             img1: "",
             img2: "",
             img3: "",
-            Tags: []
+            Tags: [],
+            userContact: ""
         },
         search: "",
         dialog: false,
@@ -181,6 +252,7 @@ export default {
                 tags: 5
             },
         ],
+        users: []
     }),
     watch: {
 
@@ -259,12 +331,47 @@ export default {
                     });
                 });
         },
+        getUsers() {
+            //SetItems
+            this.users = [];
+            db.get(
+                `${BAPI}/users/`, {
+                    headers: {
+                        Authorization: authentication.getAuthenticationHeader(this)
+                    },
+                    params: {}
+                }
+            )
+            .then(response => {
+                this.users = response.data;
+                console.log(this.users)
+            })
+            .catch(error => {
+                this.$store.commit("toggle_alert", {
+                    color: "red",
+                    text: error.message
+                });
+            });
+        },
         createItem() {
-            if (this.newItem.Name != "" && this.newItem.Desc) {
-                var body = new URLSearchParams();
-                body.append("name", this.newItem.Name);
-                body.append("desciption1", this.newItem.Desc);
-                body.append("tags", this.newItem.Tags)
+            if (this.newItem.Name != "") {
+                var body = {
+                    name: this.newItem.Name,
+                    subtitle: this.newItem.subtitle,
+                    title1: this.newItem.title1,
+                    title2: this.newItem.title2,
+                    title3: this.newItem.title3,
+                    description1: this.newItem.description1,
+                    description2: this.newItem.description2,
+                    description3: this.newItem.description3,
+                    tags: this.newItem.Tags,
+                    image: this.newItem.imgMain,
+                    cardImg1: this.newItem.img1,
+                    cardImg2: this.newItem.img2,
+                    cardImg3: this.newItem.img3,
+                    userContact: this.newItem.userContact
+                }
+
                 Axios.post(`${BAPI}/items`, body, {
                         headers: {
                             Authorization: authentication.getAuthenticationHeader(this)
@@ -293,7 +400,19 @@ export default {
                             text: "Registro exitoso!"
                         });
                         this.newItem.Name = ""
-                        this.newItem.Desc = ""
+                        this.newItem.subtitle = ""
+                        this.newItem.title1 = ""
+                        this.newItem.title2 = ""
+                        this.newItem.title3 = ""
+                        this.newItem.description1 = ""
+                        this.newItem.description2 = ""
+                        this.newItem.description3 = ""
+                        this.newItem.Tags = []
+                        this.newItem.imgMain = ""
+                        this.newItem.img1 = ""
+                        this.newItem.img2 = ""
+                        this.newItem.img3 = ""
+                        this.newItem.userContact = ""
                         this.getItems()
                     })
                     .catch(err => {
@@ -322,6 +441,7 @@ export default {
     mounted() {
         this.getItems()
         this.getTags()
+        this.getUsers()
     },
     components: {
         MyItems: () => import("@/components/viewComponents/Items/Items-Table")
