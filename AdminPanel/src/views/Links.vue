@@ -71,7 +71,7 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" outlined :items="MyItems" attach color="#4a6cac" chips label="Items" multiple>
+                                                    <v-select v-model="newLink.Items" outlined :items="MyItems" item-text="name" item-value="value" return-object attach color="#4a6cac" chips label="Items" multiple>
                                                         <template v-slot:label>
                                                             <p v-html="'Items'" />
                                                         </template>
@@ -91,7 +91,7 @@
                                     <v-flex xs12 sm4>
                                         <v-layout column>
                                             <template>
-                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headers" :items="value" hide-default-footer item-key="_id">
+                                                <v-data-table no-data-text="No hay datos" :page.sync="page" :headers="headers" :items="newLink.Items" hide-default-footer item-key="_id">
                                                     <template v-slot:item="props">
                                                         <tr>
                                                             <td class="request-td">{{props.item.name}}</td>
@@ -229,6 +229,7 @@ export default {
             Name: "",
             Desc: "",
             UserContact: "",
+            Items: [],
             Categories: [],
             Title1: "",
             Title2: "",
@@ -314,7 +315,10 @@ export default {
                 )
                 .then(response => {
                     for (var i = 0; i < response.data.length; i++) {
-                        this.MyItems.push(response.data[i].name)
+                        this.MyItems.push({
+                            name: response.data[i].name,
+                            value: response.data[i].id,
+                        })
                     }
                     console.log(this.MyItems)
                 })
@@ -348,17 +352,23 @@ export default {
         },
         createItem() {
             if (this.newLink.Name != "" && this.newLink.Desc) {
-                var body = new URLSearchParams();
-                body.append("name", this.newLink.Name);
-                body.append("description", this.newLink.Desc)
-                body.append("clientName", this.newLink.UserContact)
-                body.append("statTitle1", this.newLink.Title1)
-                body.append("statTitle2", this.newLink.Title2)
-                body.append("statTitle3", this.newLink.Title3)
-                body.append("statValue1", this.newLink.Value1)
-                body.append("statValue2", this.newLink.Value2)
-                body.append("statValue3", this.newLink.Value3)
-                body.append("categories", this.newLink.Categories)
+                let itms = []
+                this.newLink.Items.forEach((item) => {
+                    itms.push(item.value)
+                })
+                var body = {
+                    name: this.newLink.Name,
+                    description: this.newLink.Desc,
+                    clientName: this.newLink.UserContact,
+                    items: itms,
+                    statTitle1: this.newLink.Title1,
+                    statTitle2: this.newLink.Title2,
+                    statTitle3: this.newLink.Title3,
+                    statValue1: this.newLink.Value1,
+                    statValue2: this.newLink.Value2,
+                    statValue3: this.newLink.Value3,
+                    categories: this.newLink.Categories,
+                }
 
                 Axios.post(`${BAPI}/links`, body, {
                         headers: {
@@ -391,6 +401,7 @@ export default {
                         this.newLink.Name = ""
                         this.newLink.Desc = ""
                         this.newLink.UserContact = ""
+                        this.newLink.Items = []
                         this.newLink.Title1 = "",
                         this.newLink.Title2 = "",
                         this.newLink.Title3 = "",

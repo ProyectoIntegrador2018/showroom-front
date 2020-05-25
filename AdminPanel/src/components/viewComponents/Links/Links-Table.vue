@@ -7,7 +7,11 @@
                     <td>{{props.item.id}}</td>
                     <td class="request-td">{{props.item.name}}</td>
                     <td class="request-td">{{props.item.clientName}}</td>
-                    <td class="request-td">{{props.item.tags}}</td>
+                    <td class="request-td">
+                        <span v-for="item in props.item.items" :key="item.name">
+                            {{item.name}}
+                        </span>
+                    </td>
                     <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
                         <v-icon small class="mr-7" @click="editItem(props.item)" color="black">mdi-pencil</v-icon>
                         <v-icon small @click="deleteLink(props.item)" color="black">mdi-delete</v-icon>
@@ -90,7 +94,7 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" outlined :items="tags" attach color="#4a6cac" chips label="Items" multiple>
+                                                    <v-select v-model="linkItems" outlined :items="linkItems" item-text="name" attach color="#4a6cac" chips label="Items" multiple>
                                                         <template v-slot:label>
                                                             <p v-html="'Items'" />
                                                         </template>
@@ -110,10 +114,10 @@
                                     <v-flex xs12 sm4>
                                         <v-layout column>
                                             <template>
-                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headersItems" :items="added" hide-default-footer item-key="_id">
+                                                <v-data-table :light="light" no-data-text="No hay datos" :page.sync="page" :items-per-page.sync="perPage" :headers="headersItems" :items="linkItems" hide-default-footer item-key="_id">
                                                     <template v-slot:item="props">
                                                         <tr>
-                                                            <td class="request-td">{{props.item.name}}</td>
+                                                            <td class="request-td">{{props.item.name}} aaa</td>
                                                             <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
                                                                 <v-icon small color="black">mdi-delete</v-icon>
                                                             </td>
@@ -149,6 +153,7 @@ export default {
         myitems: [],
         Name: "",
         contactname: "",
+        linkItems: [],
         description: "",
         descriptiondialog: false,
         editdialog: false,
@@ -315,6 +320,7 @@ export default {
             this.myitem = item.id
             this.Name = item.name
             this.contactname = item.clientName
+            this.linkItems = item.items
             this.description = item.description
         },
     editLink() {
