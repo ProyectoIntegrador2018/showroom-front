@@ -71,27 +71,36 @@
                                                         </template>
                                                     </v-text-field>
                                                 </v-flex>
-                                                <v-flex sm12 class="pa-1">
-                                                     <v-select v-model="value" :items="roles" label="Rol" dense></v-select>
-                                                </v-flex>
+                                                <v-layout row wrap>
+                                                    <v-flex sm6 class="pa-1">
+                                                        <v-text-field height="40" v-model="password" color="#4a6cac" outlined dense type="password" style="border-color:coral;">
+                                                            <template v-slot:label>
+                                                                <p v-html="'Contraseña'" />
+                                                            </template>
+                                                        </v-text-field>
+                                                    </v-flex>
+                                                    <v-flex sm6 class="pa-1">
+                                                        <v-text-field height="40" v-model="confirmpassword" color="#4a6cac" outlined type="password" dense style="border-color:coral;">
+                                                            <template v-slot:label>
+                                                                <p v-html="'Confirmar Contraseña'" />
+                                                            </template>
+                                                        </v-text-field>
+                                                    </v-flex>
+                                                </v-layout>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
 
                                     <v-flex xs12 sm4>
                                         <v-flex sm12 class="pa-1">
-                                            <v-text-field height="40" v-model="password" color="#4a6cac" outlined dense type="password" style="border-color:coral;">
+                                            <v-text-field height="40" v-model="newUsr.Phone" color="#4a6cac" outlined dense style="border-color:coral;">
                                                 <template v-slot:label>
-                                                    <p v-html="'Contraseña'" />
+                                                    <p v-html="'Telefono'" />
                                                 </template>
                                             </v-text-field>
                                         </v-flex>
                                         <v-flex sm12 class="pa-1">
-                                            <v-text-field height="40" v-model="confirmpassword" color="#4a6cac" outlined type="password" dense style="border-color:coral;">
-                                                <template v-slot:label>
-                                                    <p v-html="'Confirmar Contraseña'" />
-                                                </template>
-                                            </v-text-field>
+                                            <v-select v-model="newUsr.Role" :items="roles" label="Rol" dense></v-select>
                                         </v-flex>
                                     </v-flex>
                                 </v-layout>
@@ -140,6 +149,8 @@ export default {
             Name: "",
             Desc: "",
             Email: "",
+            Role: "",
+            Phone: ""
         },
         dialog: false,
         tags: ['foo', 'bar', 'fizz', 'buzz'],
@@ -260,7 +271,8 @@ export default {
                     body.append("name", this.newUsr.Name);
                     body.append("email", this.newUsr.Email);
                     body.append("password", this.password);
-                    body.append("role", this.value)
+                    body.append("role", this.newUsr.Role);
+                    body.append("phone", this.newUsr.Phone);
                     Axios.post(`${BAPI}/users`, body, {
                             headers: {
                                 Authorization: authentication.getAuthenticationHeader(this)
@@ -291,6 +303,8 @@ export default {
                             });
                             this.newUsr.Name = ""
                             this.newUsr.Desc = ""
+                            this.newUsr.Role = ""
+                            this.newUsr.Phone = ""
                             this.password = ""
                             thos.confirmpassword = ""
                         })

@@ -90,7 +90,7 @@
                                                     </v-text-field>
                                                 </v-flex>
                                                 <v-flex sm12 class="pa-1">
-                                                    <v-select v-model="value" :items="roles" label="Rol" dense></v-select>
+                                                    <v-select v-model="role" :items="roles" label="Rol" dense></v-select>
                                                 </v-flex>
                                             </v-flex>
                                         </v-layout>
@@ -161,6 +161,7 @@ export default {
         mypass:"",
         name:"",
         email:"",
+        role:"",
         password:"",
         roles: ['user', 'admin'],
         editedItem: {
@@ -282,7 +283,7 @@ export default {
                 var body = new URLSearchParams();
                 body.append("name", this.name);
                 body.append("email", this.email);
-                body.append("role",this.value)
+                body.append("role",this.role)
                 db.put(
                         `${BAPI}/users/${this.myitem}`,
                         body, {
