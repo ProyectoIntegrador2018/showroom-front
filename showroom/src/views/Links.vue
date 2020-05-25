@@ -21,7 +21,14 @@
     </nav>
 </div>
 
-    <CoreHeader></CoreHeader>
+    <CoreHeader
+    :statTitle1="link.statTitle1"
+    :statTitle2="link.statTitle2"
+    :statTitle3="link.statTitle3"
+    :statValue1="link.statValue1"
+    :statValue2="link.statValue2"
+    :statValue3="link.statValue3"
+    ></CoreHeader>
     <v-layout >
       <div class="container-fluid">
     <div class="row rowCards">
@@ -87,6 +94,7 @@ export default {
             .then(res => {
               console.log(res.data)
               this.link = res.data
+              console.log(this.link)
               this.items = this.link.items
             })
         },

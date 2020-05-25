@@ -5,7 +5,15 @@
             <HeaderSearchbar></HeaderSearchbar>
             <div class="intro-lead-in"></div>
             <div class="intro-heading text-uppercase">
-                <HeaderData></HeaderData>
+                <HeaderData
+                :titles1="statTitle1"
+                :titles2="statTitle2"
+                :titles3="statTitle3"
+                :val1="statValue1"
+                :val2="statValue2"
+                :val3="statValue3"
+
+                ></HeaderData>
             </div>
         </div>
     </div>
@@ -16,7 +24,14 @@
 export default {
     name: 'Header',
     props: {
-        msg: String
+        msg: String,
+        statTitle1: String,
+        statTitle2: String,
+        statTitle3: String,
+        statValue1: String,
+        statValue2: String,
+        statValue3: String,
+
     },
     components: {
         HeaderSearchbar: () => import('@/components/Header/SearchBar'),
