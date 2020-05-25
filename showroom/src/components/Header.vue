@@ -2,8 +2,9 @@
 <header class="masthead" id="page-top">
     <div class="container">
         <div class="intro-text">
-            <HeaderSearchbar></HeaderSearchbar>
-            <div class="intro-lead-in"></div>
+            <v-flex xs12>
+                <v-text-field v-model="search" label="Search tags"  outlined rounded solo clearable></v-text-field>
+            </v-flex>
             <div class="intro-heading text-uppercase">
                 <HeaderData
                 :titles1="statTitle1"
@@ -12,7 +13,6 @@
                 :val1="statValue1"
                 :val2="statValue2"
                 :val3="statValue3"
-
                 ></HeaderData>
             </div>
         </div>
@@ -34,7 +34,6 @@ export default {
 
     },
     components: {
-        HeaderSearchbar: () => import('@/components/Header/SearchBar'),
         HeaderData: () => import('@/components/Header/Numbers'),
     }
 }

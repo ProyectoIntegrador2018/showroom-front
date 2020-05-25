@@ -3,7 +3,7 @@
 <div class="topNavBar">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand js-scroll-trigger" href="#page-top" @click="resetItems()">
+            <a class="navbar-brand js-scroll-trigger" @click="getlink()">
                 <img class="logo-img" src="../assets/BPLogoTAG_RGB-72dpi_Ver01-Blanco.png">
             </a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,14 +13,13 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ml-auto">
                     <li class="nav-item" v-for="category in link.categories" :key="category">
-                        <a class="nav-link js-scroll-trigger" href="#searchAnchor" @click="navGenerated(tag)">{{category}}</a>
+                        <a class="nav-link js-scroll-trigger" @click="navGenerated(category)">{{category}}</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 </div>
-
     <CoreHeader
     :statTitle1="link.statTitle1"
     :statTitle2="link.statTitle2"
@@ -83,6 +82,7 @@ export default {
     link: '',
     items: '',
     selected: Object,
+    filterResult: [],
   }),
   methods: {
     getlink() {
@@ -101,7 +101,17 @@ export default {
         selectProject(project) {
             this.selected = project
         },
-  },
+        navGenerated(tag) {
+          this.filterResult = []
+          var i
+          for (i=0; i< this.items.length; i++){
+            if (this.items[i].tags.includes(tag)) {
+              this.filterResult.push(this.items[i])
+            }
+        }
+        this.items = this.filterResult
+        }
+    },
   created () {
    this.currentId = this.$route.params.id
    this.getlink()
