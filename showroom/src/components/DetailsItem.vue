@@ -20,17 +20,27 @@
                                     <v-layout column>
                                         <ul class="nav nav-tabs">
                                             <li>
-                                                <a class="nav-link active">{{data.title1}}</a>
+                                                <a class="nav-link active" @click="showDesc1()" :style="{'color':col1,'cursor':'pointer'}"> {{data.title1}}</a>
                                             </li>
                                             <li>
-                                                <a class="nav-link active">{{data.title2}}</a>
+                                                <a class="nav-link active" @click="showDesc2()" :style="{'color':col2,'cursor':'pointer'}">{{data.title2}}</a>
                                             </li>
                                             <li>
-                                                <a class="nav-link active">{{data.title3}}</a>
+                                                <a class="nav-link active" @click="showDesc3()" :style="{'color':col3,'cursor':'pointer'}">{{data.title3}}</a>
                                             </li>                                            
                                         </ul>
                                         <div style="color:white;padding-top: 20px !important;">
+
+                                            <div v-if="sel1"> 
                                             {{data.description1}}
+                                            </div>
+                                            <div v-else-if="sel2">
+                                            {{data.description2}}
+                                            </div>
+                                            <div v-else>
+                                            {{data.description3}}
+                                            </div>
+
                                         </div>
                                     </v-layout>
                                 </v-flex>
@@ -109,12 +119,45 @@ export default {
   data () {
     return {
       stringy: 'Henlo snek',
-      isTrue: false
+      isTrue: false,
+      sel1: true,
+      sel2: false,
+      sel3: false,
+      col1: "blue",
+      col2: "gray",
+      col3: "gray",
     }
   },
   mounted () {
     console.log(this.data)
-  }
+  },
+  methods:{
+      showDesc1(){
+          console.log("hue")
+          this.col1 = "blue"
+          this.col2 = "gray"
+          this.col3 = "gray"
+          this.sel1 = true
+          this.sel2 = false
+          this.sel3 = false
+      },
+      showDesc2(){
+          this.sel1 = false
+          this.sel2 = true
+          this.sel3 = false
+          this.col1 = "gray"
+          this.col2 = "blue"
+          this.col3 = "gray"
+      },
+      showDesc3(){
+          this.sel1 = false
+          this.sel2 = false
+          this.sel3 = true
+          this.col1 = "gray"
+          this.col2 = "gray"
+          this.col3 = "blue"
+      }
+  },
 }
 </script>
 
