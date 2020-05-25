@@ -81,6 +81,7 @@ export default {
     currentId: '',
     link: '',
     items: '',
+    originalItems: [],
     selected: Object,
     filterResult: [],
   }),
@@ -96,20 +97,21 @@ export default {
               this.link = res.data
               console.log(this.link)
               this.items = this.link.items
+              this.originalItems = this.items
             })
         },
         selectProject(project) {
             this.selected = project
         },
         navGenerated(tag) {
-          this.filterResult = []
-          var i
-          for (i=0; i< this.items.length; i++){
-            if (this.items[i].tags.includes(tag)) {
-              this.filterResult.push(this.items[i])
-            }
-        }
-        this.items = this.filterResult
+            this.filterResult = []
+            this.items = this.originalItems.filter(function (item) {
+                if (item.tags.includes(tag))
+                    return item
+            })
+            
+            // this.items = []
+            // this.items = this.filterResult
         }
     },
   created () {
