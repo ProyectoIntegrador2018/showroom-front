@@ -1,7 +1,7 @@
 <template>
 <div>
     <v-card class="detailItem">
-        <v-card-title class="headline" style="justify-content:center;color:white;font-size:2em;font-weight:bolder;">{{details_item.title}}</v-card-title>
+        <v-card-title class="headline" style="justify-content:center;color:white;font-size:2em;font-weight:bolder;">{{data.name}}</v-card-title>
         <v-card-text>
             <v-container class="pa-0" grid-list-md text-xs-center>
                 <v-layout row wrap>
@@ -11,7 +11,7 @@
                                 <v-flex xs12 sm3>
                                     <v-layout column>
                                         <v-flex xs12 sm12 class="pa-1">
-                                            <v-img :src="details_item.img_feature" style="border-radius: 10px;"></v-img>
+                                            <v-img :src="data.image" style="border-radius: 10px;"></v-img>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -20,11 +20,17 @@
                                     <v-layout column>
                                         <ul class="nav nav-tabs">
                                             <li>
-                                                <a class="nav-link active">{{details_item.title_descr_1}}</a>
+                                                <a class="nav-link active">{{data.title1}}</a>
                                             </li>
+                                            <li>
+                                                <a class="nav-link active">{{data.title2}}</a>
+                                            </li>
+                                            <li>
+                                                <a class="nav-link active">{{data.title3}}</a>
+                                            </li>                                            
                                         </ul>
                                         <div style="color:white;padding-top: 20px !important;">
-                                            {{details_item.descr_1}}
+                                            {{data.description1}}
                                         </div>
                                     </v-layout>
                                 </v-flex>
@@ -58,21 +64,21 @@
                                                             <v-flex xs12 sm8>
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-account</v-icon>
-                                                                    {{contact_name}}
+                                                                    {{data.userContact}}
                                                                 </v-flex>
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-phone</v-icon>
-                                                                    {{contact_phone}}
+                                                                    {{data.userContact}}
                                                                 </v-flex>
 
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-email</v-icon>
-                                                                    {{contact_email}}
+                                                                    {{data.userContact}}
                                                                 </v-flex>
 
                                                                 <v-flex xs12>
                                                                     <div class="tags">
-                                                                        <ul v-for="(tag,j) in details_item.tags" :key="j"> <a href="#" class="badge badge-pill badge-primary"> {{tag}} </a></ul>
+                                                                        <ul v-for="(tag,j) in data.tags" :key="j"> <a href="#" class="badge badge-pill badge-primary"> {{tag}} </a></ul>
                                                                     </div>
                                                                 </v-flex>
                                                             </v-flex>
@@ -90,17 +96,25 @@
             </v-container>
         </v-card-text>
     </v-card>
-
 </div>
 </template>
 
 <script>
-import {
-    mapState
-} from 'vuex';
 export default {
-    name: 'DetailsItem',
-    computed: mapState(['details_item', 'contact_name', 'contact_phone', 'contact_email']),
+  props: {
+    data: {
+        type: Object
+    }
+  },
+  data () {
+    return {
+      stringy: 'Henlo snek',
+      isTrue: false
+    }
+  },
+  mounted () {
+    console.log(this.data)
+  }
 }
 </script>
 

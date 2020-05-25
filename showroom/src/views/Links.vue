@@ -1,18 +1,38 @@
 <template>
   <div class='home'>
-    <CoreNavBar></CoreNavBar>
+<div class="topNavBar">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="#page-top" @click="resetItems()">
+                <img class="logo-img" src="../assets/BPLogoTAG_RGB-72dpi_Ver01-Blanco.png">
+            </a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ml-auto">
+                    <li class="nav-item" v-for="category in link.categories" :key="category">
+                        <a class="nav-link js-scroll-trigger" href="#searchAnchor" @click="navGenerated(tag)">{{category}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
     <CoreHeader></CoreHeader>
     <v-layout >
       <div class="container-fluid">
     <div class="row rowCards">
         <div class="card-group col-12 nopadding" id="searchAnchor">
-            <v-flex xs12 sm4 md4 v-for="(itemObj,i) in items" :key="`${i}-${itemObj.name}`">
-                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg" @click="displayDetails(itemObj._id)">
-                    <img :src="itemObj.img_principal" class="card-img h-100" alt="...">
+            <v-flex xs12 sm4 md4 v-for="itemObj in items" :key="itemObj.id">
+                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg">
+                    <img :src="itemObj.image" class="card-img h-100" alt="...">
                     <div class="card-img-overlay">
                         <h1 class="card-title">{{itemObj.name}}</h1>
                         <div class="overlay">
-                            <p class="card-text">{{itemObj.desciption1}}</p>
+                            <p class="card-text">{{itemObj.subtitle}}</p>
                         </div>
                         <div class="badge-position">
                             <ul v-for="(tag,j) in itemObj.tags" :key="j"> <a href="#" class="badge badge-pill badge-primary"> {{tag}} </a></ul>
@@ -26,7 +46,7 @@
                 <div class="modal fade bd-example-modal-lg" tabindex="-1 " role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
-                            <DetailedItem></DetailedItem>
+                            <DetailsItem :data="itemObj"></DetailsItem>
                         </div>
                     </div>
                 </div>
@@ -42,17 +62,20 @@
 
 <script>
 import Axios from "axios";
+import DetailsItem from '../components/DetailsItem.vue'
+import CoreHeader from '../components/Header.vue'
+
 export default {
+  components: {
+    DetailsItem,
+    CoreHeader
+  },
   name: 'home',
   data: () => ({
     currentId: '',
     link: '',
     items: '',
   }),
-  components: {
-    CoreHeader: () => import('@/components/Header'),
-    DetailedItem: () => import('@/components/DetailsItem'),
-  },
   methods: {
     getlink() {
             Axios.get(`https://shrouded-plains-43003.herokuapp.com/links/` + this.currentId, {
@@ -65,7 +88,7 @@ export default {
               this.link = res.data
               this.items = this.link.items
             })
-        }
+        },
   },
   created () {
    this.currentId = this.$route.params.id
@@ -163,5 +186,112 @@ ul,
 a {
     display: inline;
 
+}
+
+#app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+}
+
+#nav {
+    padding: 5px;
+}
+
+nav.scroll {
+    background-color: red;
+    height: 12%;
+}
+
+#nav a {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+    color: #42b983;
+}
+
+#mainNav {
+    /* background-color: #2c3e5094; */
+    height: 12%;
+
+}
+
+#mainNav .navbar-toggler {
+    font-size: 12px;
+    right: 0;
+    padding: 5px;
+
+    text-transform: uppercase;
+    color: white;
+    border: 0;
+    background-color: #333366;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+#mainNav .navbar-brand {
+    color: #0370fe;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+#mainNav .navbar-brand.active,
+#mainNav .navbar-brand:active,
+#mainNav .navbar-brand:focus,
+#mainNav .navbar-brand:hover {
+    color: #0370fe;
+}
+
+#mainNav .navbar-nav .nav-item .nav-link {
+    font-size: 90%;
+    font-weight: 600;
+    padding: 10px;
+    letter-spacing: 1px;
+    color: white;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+#mainNav .navbar-nav .nav-item .nav-link.active,
+#mainNav .navbar-nav .nav-item .nav-link:hover {
+    color: #333366;
+}
+
+.logo-img {
+    display: flex;
+    width: 120px;
+    height: 70px;
+
+}
+
+@media (min-width: 992px) {
+    #mainNav {
+        padding-top: 25px;
+        padding-bottom: 25px;
+        transition: padding-top 0.3s, padding-bottom 0.3s;
+        border: none;
+
+    }
+
+    #mainNav .navbar-brand {
+        font-size: 1.75em;
+        transition: all 0.3s;
+    }
+
+    #mainNav .navbar-nav .nav-item .nav-link {
+        padding: 1.1em 1em !important;
+    }
+
+    #mainNav.navbar-shrink {
+        padding-top: 0;
+        padding-bottom: 0;
+
+    }
+
+    #mainNav.navbar-shrink .navbar-brand {
+        font-size: 1.25em;
+        padding: 12px 0;
+    }
 }
 </style>
