@@ -10,7 +10,7 @@
                     <td class="request-td" :class="'accion'" style="text-align:center; min-width:100px;">
                         <v-icon small class="mr-7" @click="editItem(props.item)" color="black">mdi-pencil</v-icon>
                         <v-icon small class="mr-7" @click="deleteUser(props.item)" color="black">mdi-delete</v-icon>
-                        <v-icon small @click="changepassword(props.item)" color="black">mdi-reload</v-icon>
+                        <v-icon small @click="changepassword(props.item, props.item.email)" color="black">mdi-reload</v-icon>
                     </td>
                 </tr>
             </template>
@@ -115,40 +115,41 @@
                 <v-container class="pa-0" grid-list-md text-xs-center>
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <v-container class="pa-0" grid-list-md text-xs-left>
-                                <v-layout row wrap>
-                                    <v-flex xs12 sm12>
-                                        <v-layout column>
-                                            <v-flex sm12 class="pa-1">
-                                                <v-flex sm12 class="pa-1">
-                                                    <v-text-field height="40" v-model="mypass" color="#4a6cac" outlined dense style="border-color:coral;">
-                                                        <template v-slot:label>
-                                                            <p v-html="'Contraseña nueva'" />
-                                                        </template>
-                                                    </v-text-field>
-                                                </v-flex>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
+                            <span>Se le enviará un correo al usuario con instrucciones de como cambiar la contraseña.</span>
                         </v-flex>
                     </v-layout>
                 </v-container>
             </v-card-text>
-            <v-card-actions style="justify-content: center;">
+            <v-card-actions v-if="!isSending" style="justify-content: center;">
                 <v-btn style="text-transform: none; width: 25%; margin-right: 10%;" color="#E36E6E" @click="passdialog = false" dark>Cancelar</v-btn>
                 <v-btn depressed style="text-transform: none; width: 25%; background-color: #809DED; color: white;" @click="changepass()" color="#809DED">Aceptar</v-btn>
             </v-card-actions>
+            <v-progress-circular v-else indeterminate/>
         </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogEmail" max-width="800" content-class="dialog-radius">
+      <v-card>
+        <v-card-title class="headline" style="justify-content:left;color:#809DED;">Email de recuperación enviado</v-card-title>
+        <v-card-actions style="justify-content: center;">
+          <v-btn
+            depressed
+            style="text-transform: none; width: 25%; background-color: #809DED; color: white;"
+            @click="dialogEmail = false"
+            color="#809DED"
+          >Aceptar</v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
 
 </div>
 </template>
 
 <script>
+import Axios from "axios";
 export default {
     data: () => ({
+        isSending: false,
         perPage: 0,
         currentPage: 0,
         expand: false,
@@ -164,6 +165,7 @@ export default {
         role:"",
         password:"",
         roles: ['user', 'admin'],
+        dialogEmail: false,
         editedItem: {
 
         },
@@ -253,8 +255,9 @@ export default {
             var formattedDate = new Date(date);
             return formattedDate.toDateString();
         },
-        changepassword(item){
+        changepassword(item, email){
             this.passdialog = true
+            this.passEmail = email
             this.myitem = item.id
             this.mypass = ""
         },
@@ -265,16 +268,39 @@ export default {
             this.email = item.email
         },
         changepass(){
-            if (this.mypass != "" ) {
-
-                //after call
-                this.passdialog = false
-            }else{
-                this.$store.commit("toggle_alert", {
-                    color: "red",
-                    text: "Porfavor llenar todos los campos obligatorios"
-                });
+            this.isSending = true
+            var vm = this
+            let body = {
+                email: this.passEmail
             }
+
+            Axios.post(`${BAPI}/password-resets`, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                console.log('Email sent successfully')
+                console.log(res.data)
+                vm.dialogEmail = true
+                vm.passdialog = false
+                vm.isSending = false
+                vm.passEmail = ''
+                return res.data;
+            })
+            .catch(err => {
+                console.log(err)
+                console.warn(err);
+                vm.passEmail = ''
+                vm.passdialog = false
+                vm.isSending = false
+                this.$store.commit("toggle_alert", {
+                    color: "error",
+                    text: err.response.data.message
+                });
+            });
+            //after recover call
+            this.dialog = false
         },
         editUser() {
             console.log("Editando inversion");
