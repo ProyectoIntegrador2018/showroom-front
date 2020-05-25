@@ -87,7 +87,7 @@
                                                             <v-flex xs12 sm4>
                                                                 <v-img src="../assets/user-def.png" style="border-radius: 50%;" class="grey lighten-2"></v-img>
                                                             </v-flex>
-                                                            <v-flex xs12 sm8>
+                                                            <v-flex xs12 sm8 v-if="data.userContact">
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-account</v-icon>
                                                                     {{data.userContact.name}}

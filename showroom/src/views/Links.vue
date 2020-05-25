@@ -21,6 +21,7 @@
     </nav>
 </div>
     <CoreHeader
+    @typed="filterBySearch"
     :statTitle1="link.statTitle1"
     :statTitle2="link.statTitle2"
     :statTitle3="link.statTitle3"
@@ -112,6 +113,18 @@ export default {
             
             // this.items = []
             // this.items = this.filterResult
+        },
+        filterBySearch (value) {
+            console.log(value)
+            this.items = this.originalItems.filter(function (item) {
+                let j = 0
+                for(j=0; j<item.tags.length; j++) {
+                    if (item.tags[j].includes(value)) {
+                        console.log(item)
+                        return item
+                    }
+                }
+            })
         }
     },
   created () {

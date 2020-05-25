@@ -3,7 +3,7 @@
     <div class="container">
         <div class="intro-text">
             <v-flex xs12>
-                <v-text-field v-model="search" label="Search tags"  outlined rounded solo clearable></v-text-field>
+                <v-text-field v-model="search" @input="emitIt" label="Search tags"  outlined rounded solo clearable></v-text-field>
             </v-flex>
             <div class="intro-heading text-uppercase">
                 <HeaderData
@@ -23,6 +23,9 @@
 <script>
 export default {
     name: 'Header',
+    data: () => ({
+        search: ''
+    }),
     props: {
         msg: String,
         statTitle1: String,
@@ -35,6 +38,11 @@ export default {
     },
     components: {
         HeaderData: () => import('@/components/Header/Numbers'),
+    },
+    methods: {
+        emitIt () {
+            this.$emit('typed', this.search)
+        }
     }
 }
 </script>
