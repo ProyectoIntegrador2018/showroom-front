@@ -27,7 +27,7 @@
     <div class="row rowCards">
         <div class="card-group col-12 nopadding" id="searchAnchor">
             <v-flex xs12 sm4 md4 v-for="itemObj in items" :key="itemObj.id">
-                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg">
+                <a class="card" data-toggle="modal" data-target=".bd-example-modal-lg" @click="selectProject(itemObj)">
                     <img :src="itemObj.image" class="card-img h-100" alt="...">
                     <div class="card-img-overlay">
                         <h1 class="card-title">{{itemObj.name}}</h1>
@@ -46,7 +46,7 @@
                 <div class="modal fade bd-example-modal-lg" tabindex="-1 " role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
-                            <DetailsItem :data="itemObj"></DetailsItem>
+                            <DetailsItem :data="selected"></DetailsItem>
                         </div>
                     </div>
                 </div>
@@ -75,6 +75,7 @@ export default {
     currentId: '',
     link: '',
     items: '',
+    selected: Object,
   }),
   methods: {
     getlink() {
@@ -88,6 +89,9 @@ export default {
               this.link = res.data
               this.items = this.link.items
             })
+        },
+        selectProject(project) {
+            this.selected = project
         },
   },
   created () {
