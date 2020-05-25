@@ -90,16 +90,16 @@
                                                             <v-flex xs12 sm8>
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-account</v-icon>
-                                                                    {{data.userContact}}
+                                                                    {{data.userContact.name}}
                                                                 </v-flex>
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-phone</v-icon>
-                                                                    {{data.userContact}}
+                                                                    {{data.userContact.phone}}
                                                                 </v-flex>
 
                                                                 <v-flex xs12 style="color:white;">
                                                                     <v-icon medium color="white">mdi-email</v-icon>
-                                                                    {{data.userContact}}
+                                                                    {{data.userContact.email}}
                                                                 </v-flex>
 
                                                                 <v-flex xs12>
